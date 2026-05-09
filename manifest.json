@@ -1,0 +1,16 @@
+{
+  "name": "习惯追踪",
+  "short_name": "习惯追踪",
+  "description": "简洁的习惯时间追踪应用",
+  "start_url": "./habit-tracker.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1a1a2e",
+  "icons": [{
+    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='55'>⏱</text></svg>",
+    "sizes": "100x100",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
+}
