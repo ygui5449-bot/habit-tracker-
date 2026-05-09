@@ -2,464 +2,329 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>习惯追踪</title>
-<meta name="theme-color" content="#1a1a2e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="习惯追踪">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='55'>⏱</text></svg>">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.app{max-width:800px;margin:0 auto;padding:16px}
-
-.auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90dvh;padding:24px}
-.auth-screen h1{font-size:48px;margin-bottom:8px}
-.auth-screen .subtitle{color:#888;margin-bottom:32px;font-size:15px}
-.auth-card{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.auth-card input{width:100%;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:12px;font-size:16px;margin-bottom:12px;outline:none;font-family:inherit}
-.auth-card input:focus{border-color:#1a1a2e}
-.auth-card .btn-auth{width:100%;padding:13px;background:#1a1a2e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px}
-.auth-card .btn-auth:disabled{opacity:.5}
-.auth-card .switch-mode{text-align:center;margin-top:16px;font-size:14px;color:#888}
-.auth-card .switch-mode a{color:#1a1a2e;cursor:pointer;font-weight:600;text-decoration:underline}
-.auth-error{color:#e74c3c;font-size:13px;margin-bottom:8px;text-align:center;min-height:20px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100dvh}
 .hidden{display:none!important}
-
-.tab-nav{display:flex;gap:2px;background:#e8ecf1;border-radius:10px;padding:3px;margin-bottom:12px;position:sticky;top:16px;z-index:10;overflow-x:auto}
-.tab-btn{flex:1;padding:7px 2px;border:none;background:transparent;border-radius:8px;font-size:12px;cursor:pointer;color:#666;transition:.2s;font-weight:500;white-space:nowrap;min-width:0}
-.tab-btn.active{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.user-menu{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 4px}
-.user-avatar{width:28px;height:28px;border-radius:50%;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
-.user-name{font-size:14px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn-logout{font-size:12px;color:#888;background:none;border:none;cursor:pointer;padding:4px 8px;white-space:nowrap}
-.sync-status{font-size:10px;display:flex;align-items:center;gap:3px;white-space:nowrap}
-.sync-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sync-dot.online{background:#5cb85c}
-.sync-dot.offline{background:#f0ad4e}
-.sync-dot.syncing{background:#4a90d9;animation:pulse 1s infinite}
+.login-page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90dvh;padding:24px}
+.login-page h1{font-size:48px;margin-bottom:8px}
+.login-page .sub{color:#888;margin-bottom:32px;font-size:15px}
+.login-box{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.login-box input{width:100%;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:12px;font-size:16px;margin-bottom:12px;outline:none}
+.login-box input:focus{border-color:#1a1a2e}
+.login-box .btn{width:100%;padding:13px;background:#1a1a2e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box .btn:active{opacity:.8}
+.login-box .switch{text-align:center;margin-top:16px;font-size:14px;color:#888}
+.login-box .switch a{color:#1a1a2e;cursor:pointer;font-weight:600}
+.login-error{color:#e74c3c;font-size:13px;margin-bottom:8px;text-align:center;min-height:20px}
+.app{max-width:800px;margin:0 auto;padding:12px}
+.header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.header .avatar{width:28px;height:28px;border-radius:50%;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.header .name{font-size:14px;font-weight:600;flex:1}
+.header .logout{font-size:12px;color:#888;background:none;border:none;cursor:pointer}
+.tabs{display:flex;gap:2px;background:#e8ecf1;border-radius:10px;padding:3px;margin-bottom:12px}
+.tabs a{flex:1;padding:8px 2px;border:none;background:transparent;border-radius:8px;font-size:12px;cursor:pointer;color:#666;text-align:center;text-decoration:none;white-space:nowrap}
+.tabs a.on{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.page{display:none}
+.page.on{display:block}
+.timer-bar{background:#1a1a2e;color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px}
+.timer-bar.on{display:flex}
+.timer-bar .dot{width:12px;height:12px;border-radius:50%;animation:pulse 1.2s infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.offline-banner{background:#fff3cd;color:#856404;padding:6px 12px;border-radius:8px;font-size:12px;text-align:center;margin-bottom:12px;display:none}
-.offline-banner.show{display:block}
-
-.panel{display:none}
-.panel.active{display:block}
-
-.running-banner{background:#1a1a2e;color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px}
-.running-banner.show{display:flex}
-.running-banner .rb-dot{width:12px;height:12px;border-radius:50%;animation:pulse 1.2s infinite;flex-shrink:0}
-.rb-info{flex:1;min-width:0}
-.rb-cat{font-size:13px;font-weight:600}
-.rb-timer{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
-.rb-stop{padding:10px 18px;border:none;border-radius:10px;background:#e74c3c;color:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
-
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.cat-card{padding:16px 10px;border-radius:14px;cursor:pointer;text-align:center;color:#fff;transition:transform .15s;position:relative;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;user-select:none;-webkit-tap-highlight-color:transparent}
-.cat-card:active{transform:scale(.97)}
-.cat-card.running{box-shadow:0 0 0 3px rgba(255,255,255,.5);animation:rPulse 1.5s infinite}
-@keyframes rPulse{0%,100%{box-shadow:0 0 0 3px rgba(255,255,255,.5)}50%{box-shadow:0 0 0 7px rgba(255,255,255,.25)}}
-.cat-icon{font-size:28px;line-height:1}
-.cat-name{font-size:14px;font-weight:600}
-.cat-today{font-size:11px;opacity:.85;margin-top:1px}
-.cat-running-label{font-size:10px;margin-top:1px;opacity:.9;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:8px}
-.add-card{background:#fff;color:#888;border:2px dashed #d0d5dd;min-height:90px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px}
-
-.cal-header{display:flex;align-items:center;gap:6px;margin-bottom:10px}
-.cal-header .date-title{flex:1;text-align:center;font-weight:700;font-size:15px}
-.cal-header button{width:32px;height:32px;border:1.5px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cal-header .btn-today{padding:6px 10px;width:auto;font-size:12px;font-weight:600}
-.cal-header .btn-addcal{padding:6px;width:32px;background:#1a1a2e;color:#fff;font-size:18px;border:none;font-weight:700}
-.cal-flex-tasks{background:#fff;border-radius:16px 16px 0 0;padding:6px 10px;border-bottom:1px solid #eee}
-.cal-flex-item{display:flex;align-items:center;gap:6px;padding:5px 8px;margin:2px 0;border-radius:6px;background:rgba(74,144,217,.07);border-left:3px solid #5cb85c;cursor:pointer;font-size:11px}
-.cal-grid{background:#fff;border-radius:16px;overflow:hidden}
-.cal-hour{display:flex;border-bottom:1px solid #f0f0f0;min-height:44px;position:relative}
-.cal-hour-label{width:36px;padding:3px 4px;font-size:10px;color:#999;text-align:right;flex-shrink:0;line-height:1.2}
-.cal-hour-content{flex:1;position:relative;min-height:44px}
-.cal-event{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 6px;font-size:10px;color:#fff;overflow:hidden;cursor:pointer;z-index:2}
-.cal-event.task-event{border:1.5px dashed rgba(255,255,255,.7);background:rgba(26,26,46,.75)}
-.cal-event .ev-title{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
-.cal-event .ev-time{opacity:.8;font-size:9px}
-.cal-empty{color:#ddd;font-size:12px;text-align:center;padding:30px}
-.cal-day-total{text-align:center;padding:8px;font-size:12px;color:#888}
-
-.proj-list{display:flex;flex-direction:column;gap:10px}
-.proj-card{background:#fff;border-radius:14px;padding:14px 16px;cursor:pointer;transition:transform .1s}
-.proj-card:active{transform:scale(.99)}
-.proj-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
-.proj-title{font-weight:600;font-size:14px;flex:1}
-.proj-status{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:600;white-space:nowrap}
-.p-status.active{background:#e3f2fd;color:#1976d2}
-.p-status.done{background:#e8f5e9;color:#388e3c}
-.p-status.paused{background:#fff3e0;color:#f57c00}
-.proj-bar{height:5px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:6px}
-.proj-bar-fill{height:100%;border-radius:3px;transition:width .3s}
-.proj-meta{font-size:10px;color:#999;display:flex;gap:10px;flex-wrap:wrap}
-.proj-meta span{white-space:nowrap}
-.proj-freq{display:flex;gap:2px;margin-top:4px}
-.proj-freq .d{width:18px;height:18px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;background:#e8ecf1;color:#999}
-.proj-freq .d.on{background:#1a1a2e;color:#fff}
-
-.proj-detail{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:800px;padding:24px 20px 32px;animation:slideUp .25s ease;max-height:85dvh;overflow-y:auto}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.proj-detail h3{font-size:16px;margin-bottom:14px}
-.proj-detail .pr{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.proj-detail .pr label{font-size:11px;color:#888;min-width:44px;font-weight:500}
-.proj-detail .pr input,.proj-detail .pr select{flex:1;min-width:80px;padding:7px 10px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:13px;font-family:inherit;outline:none}
-.proj-detail .pr input:focus{border-color:#4a90d9}
-.day-picker{display:flex;gap:4px;flex-wrap:wrap}
-.day-picker label{font-size:11px;display:flex;align-items:center;gap:3px;padding:4px 8px;border:1.5px solid #e0e0e0;border-radius:16px;cursor:pointer;background:#fff;transition:.15s}
-.day-picker label.on{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
-.day-picker input{display:none}
-.milestone-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
-.milestone-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8f9fa;border-radius:8px;font-size:13px}
-.milestone-item.done{opacity:.6;text-decoration:line-through}
-.milestone-item input[type="checkbox"]{width:18px;height:18px;cursor:pointer;accent-color:#5cb85c}
-.milestone-item .ms-title{flex:1}
-.milestone-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:2px 6px}
-.milestone-del:hover{color:#e74c3c}
-.add-ms-row{display:flex;gap:6px;margin-top:8px}
-.add-ms-row input{flex:1;padding:7px 10px;border:1.5px dashed #d0d5dd;border-radius:8px;font-size:12px;outline:none}
-.add-ms-row button{padding:7px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap}
-
-.timeline{margin-top:8px}
-.timeline h3{font-size:15px;margin-bottom:10px;color:#555}
-.tl-item{background:#fff;padding:12px 14px;border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.tl-info{flex:1;min-width:0}
-.tl-cat{font-size:12px;font-weight:600}
-.tl-time{font-size:11px;color:#888;margin-top:1px}
-.tl-desc{font-size:12px;color:#555;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tl-duration{font-weight:600;font-size:13px;color:#1a1a2e;flex-shrink:0}
-.tl-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:2px 6px}
-.tl-del:hover{color:#e74c3c}
-
-.stats-range{display:flex;gap:3px;background:#e8ecf1;border-radius:8px;padding:3px;margin-bottom:16px}
-.stats-range button{flex:1;padding:7px;border:none;background:transparent;border-radius:6px;cursor:pointer;font-size:13px;color:#666;font-weight:500}
-.stats-range button.active{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.stats-charts{display:flex;flex-direction:column;gap:14px}
-.chart-box{background:#fff;border-radius:14px;padding:16px}
-.chart-box h4{font-size:13px;color:#888;margin-bottom:10px}
-.chart-inner{position:relative;height:250px}
-.chart-inner.bar{height:260px}
-.stats-summary{display:flex;gap:8px;margin-bottom:14px}
-.stat-item{flex:1;background:#fff;border-radius:12px;padding:14px;text-align:center}
-.stat-item .val{font-size:24px;font-weight:700}
-.stat-item .lbl{font-size:11px;color:#888;margin-top:3px}
-
-.section-title{font-size:14px;font-weight:600;margin-bottom:10px;color:#555}
-.cat-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
-.cat-item{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
-.cat-color{width:16px;height:16px;border-radius:50%;flex-shrink:0}
-.cat-info{flex:1}
-.cat-info .name{font-weight:600;font-size:14px}
-.cat-info .meta{font-size:11px;color:#999}
-.cat-actions{display:flex;gap:4px}
-.cat-actions button{padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:1.5px solid #e0e0e0;background:#fff}
-.cat-actions .btn-del{color:#e74c3c;border-color:#fcc}
-.btn-row-manage{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.btn-secondary{padding:9px 16px;border-radius:8px;background:#fff;border:1.5px solid #e0e0e0;cursor:pointer;font-size:13px}
-.btn-secondary:hover{background:#f5f5f5}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:flex-end;justify-content:center}
-.modal-overlay.show{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:800px;padding:22px 18px 28px;animation:slideUp .25s ease;max-height:85dvh;overflow-y:auto}
-.modal h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.modal h3 .cat-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-.modal-duration{font-size:22px;font-weight:700;text-align:center;margin-bottom:14px;color:#1a1a2e}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:12px;color:#888;margin-bottom:4px;font-weight:500}
-.form-group input,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
-.form-group input:focus,.form-group textarea:focus{border-color:#4a90d9}
-.form-group textarea{resize:vertical;min-height:50px}
-.modal-time-info{font-size:12px;color:#999;text-align:center;margin-bottom:10px}
-.btn-row{display:flex;gap:8px;margin-top:16px}
-.btn-primary,.btn-cancel,.btn-discard{padding:9px 20px;border-radius:8px;font-size:14px;cursor:pointer;border:none;font-weight:600}
-.btn-primary{background:#1a1a2e;color:#fff;flex:1}
-.btn-cancel{background:#f0f0f0;color:#555}
-.btn-discard{background:#fff;color:#e74c3c;border:1.5px solid #fcc}
-
-.empty-hint{font-size:12px;color:#bbb}
-@media(min-width:480px){.tab-btn{font-size:14px;padding:9px 4px}}
+.timer-bar .info{flex:1;min-width:0}
+.timer-bar .cat{font-size:13px;font-weight:600}
+.timer-bar .clock{font-size:26px;font-weight:700}
+.timer-bar .stop{padding:10px 18px;border:none;border-radius:10px;background:#e74c3c;color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.cat{padding:16px 10px;border-radius:14px;cursor:pointer;text-align:center;color:#fff;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;-webkit-tap-highlight-color:transparent}
+.cat:active{opacity:.85}
+.cat.on{box-shadow:0 0 0 3px rgba(255,255,255,.5);animation:pulse2 1.5s infinite}
+@keyframes pulse2{50%{box-shadow:0 0 0 7px rgba(255,255,255,.25)}}
+.cat .ic{font-size:28px}
+.cat .nm{font-size:14px;font-weight:600}
+.cat .td{font-size:11px;opacity:.85}
+.cat .rl{font-size:10px;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:8px}
+.cat.add{background:#fff;color:#888;border:2px dashed #d0d5dd}
+.tl{margin-top:8px}
+.tl h3{font-size:15px;margin-bottom:10px;color:#555}
+.tl .item{background:#fff;padding:12px 14px;border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.tl .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tl .inf{flex:1;min-width:0}
+.tl .cn{font-size:12px;font-weight:600}
+.tl .tm{font-size:11px;color:#888}
+.tl .ds{font-size:12px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .dr{font-weight:600;font-size:13px;flex-shrink:0}
+.tl .dl{background:none;border:none;color:#ccc;font-size:16px;padding:2px 6px;cursor:pointer}
+.chd{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.chd .dt{flex:1;text-align:center;font-weight:700;font-size:15px}
+.chd button{width:32px;height:32px;border:1.5px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:16px}
+.chd .tdy{padding:6px 10px;width:auto;font-size:12px;font-weight:600}
+.chd .addc{padding:6px;width:32px;background:#1a1a2e;color:#fff;font-size:18px;border:none;font-weight:700}
+.cflex{background:#fff;border-radius:16px 16px 0 0;padding:6px 10px;border-bottom:1px solid #eee}
+.cfitem{display:flex;align-items:center;gap:6px;padding:5px 8px;margin:2px 0;border-radius:6px;background:rgba(74,144,217,.07);border-left:3px solid #5cb85c;cursor:pointer;font-size:11px}
+.cgrid{background:#fff;border-radius:16px;overflow:hidden}
+.chour{display:flex;border-bottom:1px solid #f0f0f0;min-height:44px}
+.chlbl{width:36px;padding:3px 4px;font-size:10px;color:#999;text-align:right;flex-shrink:0}
+.chcon{flex:1;position:relative;min-height:44px}
+.cevt{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 6px;font-size:10px;color:#fff;overflow:hidden;cursor:pointer;z-index:2}
+.cevt.tsk{border:1.5px dashed rgba(255,255,255,.7)}
+.ctot{text-align:center;padding:8px;font-size:12px;color:#888}
+.plist{display:flex;flex-direction:column;gap:10px}
+.pcard{background:#fff;border-radius:14px;padding:14px 16px;cursor:pointer}
+.pcard:active{opacity:.9}
+.phd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.pttl{font-weight:600;font-size:14px;flex:1}
+.pst{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:600}
+.pst.a{background:#e3f2fd;color:#1976d2}
+.pst.d{background:#e8f5e9;color:#388e3c}
+.pst.p{background:#fff3e0;color:#f57c00}
+.pbar{height:5px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.pbar div{height:100%;border-radius:3px}
+.pmeta{font-size:10px;color:#999;display:flex;gap:10px;flex-wrap:wrap}
+.pdays{display:flex;gap:2px;margin-top:4px}
+.pdays span{width:18px;height:18px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;background:#e8ecf1;color:#999}
+.pdays span.on{background:#1a1a2e;color:#fff}
+.srng{display:flex;gap:3px;background:#e8ecf1;border-radius:8px;padding:3px;margin-bottom:16px}
+.srng button{flex:1;padding:7px;border:none;background:transparent;border-radius:6px;cursor:pointer;font-size:13px;color:#666}
+.srng button.on{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ssum{display:flex;gap:8px;margin-bottom:14px}
+.ssum .si{flex:1;background:#fff;border-radius:12px;padding:14px;text-align:center}
+.ssum .v{font-size:24px;font-weight:700}
+.ssum .l{font-size:11px;color:#888}
+.cbx{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px}
+.cbx h4{font-size:13px;color:#888;margin-bottom:10px}
+.cci{position:relative;height:250px}
+.cci.bar{height:260px}
+.mlist{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.mitem{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.mdot{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+.minfo{flex:1}
+.minfo .mn{font-weight:600;font-size:14px}
+.minfo .mm{font-size:11px;color:#999}
+.mbtn{display:flex;gap:4px}
+.mbtn button{padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:1.5px solid #e0e0e0;background:#fff}
+.mbtn .del{color:#e74c3c;border-color:#fcc}
+.mrow{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn2{padding:9px 16px;border-radius:8px;background:#fff;border:1.5px solid #e0e0e0;cursor:pointer;font-size:13px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.popup{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:800px;padding:22px 18px 28px;animation:up .25s ease;max-height:85dvh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.popup h3{font-size:16px;margin-bottom:14px}
+.popup .fg{margin-bottom:14px}
+.popup .fg label{display:block;font-size:12px;color:#888;margin-bottom:4px}
+.popup .fg input,.popup .fg textarea{width:100%;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;outline:none}
+.popup .fg textarea{resize:vertical;min-height:50px}
+.popup .br{display:flex;gap:8px;margin-top:16px}
+.popup .br button{padding:9px 20px;border-radius:8px;font-size:14px;cursor:pointer;border:none;font-weight:600}
+.pbtn{background:#1a1a2e;color:#fff;flex:1}
+.cbtn{background:#f0f0f0;color:#555}
+.dbtn{background:#fff;color:#e74c3c;border:1.5px solid #fcc!important}
+.pdet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:800px;padding:24px 20px 32px;animation:up .25s ease;max-height:85dvh;overflow-y:auto}
+.pdet h3{font-size:16px;margin-bottom:14px}
+.pdet .pr{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.pdet .pr label{font-size:11px;color:#888;min-width:44px}
+.pdet .pr input,.pdet .pr select{flex:1;min-width:80px;padding:7px 10px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none}
+.week-picker{display:flex;gap:4px;flex-wrap:wrap}
+.week-picker label{font-size:11px;display:flex;align-items:center;gap:3px;padding:4px 8px;border:1.5px solid #e0e0e0;border-radius:16px;cursor:pointer;background:#fff}
+.week-picker label.on{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+.week-picker input{display:none}
+.ms-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.ms{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8f9fa;border-radius:8px;font-size:13px}
+.ms.done{opacity:.6;text-decoration:line-through}
+.ms input[type=checkbox]{width:18px;height:18px;accent-color:#5cb85c}
+.ms .mt{flex:1}
+.ms .mx{background:none;border:none;color:#ccc;font-size:16px;padding:2px 6px;cursor:pointer}
+.msrow{display:flex;gap:6px;margin-top:8px}
+.msrow input{flex:1;padding:7px 10px;border:1.5px dashed #d0d5dd;border-radius:8px;font-size:12px;outline:none}
+.msrow button{padding:7px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600}
+.ehint{font-size:12px;color:#bbb;text-align:center;padding:20px}
+@media(min-width:480px){.tabs a{font-size:14px;padding:9px 4px}}
 </style>
 </head>
 <body>
+<div id="loginPage" class="login-page">
+<h1>⏱️</h1><div class="sub">习惯时间追踪</div>
+<div class="login-box">
+<div class="login-error" id="loginError"></div>
+<input id="lu" placeholder="用户名" maxlength="30">
+<input id="lp" type="password" placeholder="密码" maxlength="50">
+<input id="ln" placeholder="昵称（选填）" class="hidden" maxlength="20">
+<button class="btn" id="lbtn" type="button" onclick="doLogin()">登 录</button>
+<div class="switch"><span id="swText">还没有账户？</span> <a id="swLink" onclick="toggleReg()">立即注册</a></div>
+</div></div>
 
-<div id="authScreen" class="auth-screen">
-  <h1>⏱️</h1>
-  <div class="subtitle">习惯时间追踪</div>
-  <div class="auth-card">
-    <div class="auth-error" id="authError"></div>
-    <input type="text" id="authUsername" placeholder="用户名" autocomplete="username" maxlength="30">
-    <input type="password" id="authPassword" placeholder="密码" autocomplete="current-password" maxlength="50">
-    <input type="text" id="authNickname" placeholder="昵称（选填）" autocomplete="off" maxlength="20" class="hidden">
-    <button class="btn-auth" id="btnAuth" type="button" onclick="doAuth()">登 录</button>
-    <div class="switch-mode">
-      <span id="switchText">还没有账户？</span> <a id="switchLink" onclick="switchMode()" style="cursor:pointer;color:#1a1a2e;font-weight:600;text-decoration:underline">立即注册</a>
-    </div>
-  </div>
+<div id="appMain" class="app hidden">
+<div class="header"><div class="avatar" id="avatar"></div><div class="name" id="displayName"></div><button class="logout" type="button" onclick="doLogout()">退出</button></div>
+<nav class="tabs">
+<a onclick="switchTab('record')" data-tab="record" class="on">记录</a>
+<a onclick="switchTab('calendar')" data-tab="calendar">日历</a>
+<a onclick="switchTab('stats')" data-tab="stats">统计</a>
+<a onclick="switchTab('projects')" data-tab="projects">项目</a>
+<a onclick="switchTab('manage')" data-tab="manage">管理</a>
+</nav>
+<div id="page-record" class="page on">
+<div class="timer-bar" id="timerBar"><div class="dot" id="timerDot"></div><div class="info"><div class="cat" id="timerCat"></div><div class="clock" id="timerClock">00:00</div></div><button class="stop" type="button" onclick="stopTimer()">结束</button></div>
+<div class="cats" id="catGrid"></div><div class="tl" id="timeline"></div>
 </div>
-
-<div id="appContainer" class="app hidden">
-  <div class="user-menu">
-    <div class="user-avatar" id="userAvatar"></div><span class="user-name" id="userDisplay"></span>
-    <span class="sync-status"><span class="sync-dot online" id="syncDot"></span> <span id="syncText">云端</span></span>
-    <button class="btn-logout" id="btnLogout" type="button" onclick="doLogout()">退出</button>
-  </div>
-  <div class="offline-banner" id="offlineBanner">📡 离线 — 数据已保存到本地，联网后自动同步</div>
-
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="record">📝 记录</button>
-    <button class="tab-btn" data-tab="calendar">📅 日历</button>
-    <button class="tab-btn" data-tab="stats">📊 统计</button>
-    <button class="tab-btn" data-tab="projects">📂 项目</button>
-    <button class="tab-btn" data-tab="manage">⚙️ 管理</button>
-  </nav>
-
-  <div id="panel-record" class="panel active">
-    <div class="running-banner" id="runningBanner">
-      <div class="rb-dot" id="rbDot"></div><div class="rb-info"><div class="rb-cat" id="rbCat"></div><div class="rb-timer" id="rbTimer">00:00</div></div>
-      <button class="rb-stop" type="button" onclick="stopRunning()">⏹ 结束</button>
-    </div>
-    <div class="cat-grid" id="catGrid"></div>
-    <div class="timeline" id="timeline"></div>
-  </div>
-
-  <div id="panel-calendar" class="panel">
-    <div class="cal-header">
-      <button type="button" onclick="calShift(-1)">‹</button><div class="date-title" id="calTitle"></div><button type="button" onclick="calShift(1)">›</button>
-      <button class="btn-today" type="button" onclick="calGoToday()">今天</button>
-      <button class="btn-addcal" type="button" onclick="calAddEntry(-1)">+</button>
-    </div>
-    <div class="cal-day-total" id="calTotal"></div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="empty-hint" style="padding:20px;text-align:center" id="calEmpty">这一天没有记录</div>
-  </div>
-
-  <div id="panel-stats" class="panel">
-    <div class="stats-range" id="statsRange">
-      <button data-range="day" class="active">日</button><button data-range="week">周</button><button data-range="month">月</button><button data-range="year">年</button>
-    </div>
-    <div class="stats-summary" id="statsSummary"></div>
-    <div class="stats-charts">
-      <div class="chart-box"><h4>时间占比</h4><div class="chart-inner"><canvas id="pieChart"></canvas></div></div>
-      <div class="chart-box"><h4>各分类时长对比</h4><div class="chart-inner bar"><canvas id="barChart"></canvas></div></div>
-    </div>
-  </div>
-
-  <div id="panel-projects" class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3 style="font-size:15px">📂 我的项目</h3>
-      <button class="btn-secondary" type="button" onclick="openProjectDetail()" style="font-size:12px;padding:7px 12px">+ 新建</button>
-    </div>
-    <div class="proj-list" id="projList"></div>
-  </div>
-
-  <div id="panel-manage" class="panel">
-    <div class="section-title">我的模块</div>
-    <div class="cat-list" id="catList"></div>
-    <div class="btn-row-manage">
-      <button class="btn-primary" type="button" onclick="openCatModal()">+ 添加新模块</button>
-      <button class="btn-secondary" type="button" onclick="exportData()">导出数据</button>
-      <button class="btn-secondary" type="button" onclick="document.getElementById('importFile').click()">导入数据</button>
-    </div>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
-  </div>
+<div id="page-calendar" class="page">
+<div class="chd"><button type="button" onclick="calMove(-1)">&lt;</button><div class="dt" id="calTitle"></div><button type="button" onclick="calMove(1)">&gt;</button><button class="tdy" type="button" onclick="calToday()">今天</button><button class="addc" type="button" onclick="calQuickAdd(-1)">+</button></div>
+<div class="ctot" id="calTotal"></div><div class="cgrid" id="calGrid"></div><div class="ehint" id="calEmpty">没有记录</div>
 </div>
-
-<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeStopModal()"><div class="modal">
-  <h3 id="modalTitle"></h3><div class="modal-duration" id="modalDuration"></div><div class="modal-time-info" id="modalTimeInfo"></div>
-  <div class="form-group"><label>做了什么（可选）</label><textarea id="recordDesc" placeholder="简单记录…"></textarea></div>
-  <div class="btn-row"><button class="btn-discard" type="button" onclick="closeStopModal()">丢弃</button><button class="btn-primary" type="button" onclick="saveStopRecord()">保存</button></div>
+<div id="page-stats" class="page">
+<div class="srng" id="statsRange"><button data-range="day" class="on">日</button><button data-range="week">周</button><button data-range="month">月</button><button data-range="year">年</button></div>
+<div class="ssum" id="statsSummary"></div><div class="cbx"><h4>时间占比</h4><div class="cci"><canvas id="pieC"></canvas></div></div>
+<div class="cbx"><h4>各分类时长</h4><div class="cci bar"><canvas id="barC"></canvas></div></div>
+</div>
+<div id="page-projects" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-size:15px">我的项目</h3><button class="btn2" type="button" onclick="openProject()" style="font-size:12px;padding:7px 12px">+ 新建</button></div>
+<div class="plist" id="projList"></div>
+</div>
+<div id="page-manage" class="page">
+<div style="font-size:14px;font-weight:600;margin-bottom:10px;color:#555">我的模块</div>
+<div class="mlist" id="catList"></div>
+<div class="mrow"><button class="pbtn" type="button" onclick="openCat()" style="flex:inherit;padding:9px 20px">+ 添加模块</button><button class="btn2" type="button" onclick="exportAll()">导出</button><button class="btn2" type="button" onclick="document.getElementById('importFile').click()">导入</button></div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importAll(event)">
 </div></div>
 
-<div class="modal-overlay" id="catModalOverlay" onclick="if(event.target===this)closeCatModal()"><div class="modal">
-  <h3 id="catModalTitle">添加新模块</h3>
-  <div class="form-group"><label>模块名称</label><input type="text" id="catName" placeholder="例如：冥想、练琴…"></div>
-  <div class="form-group"><label>图标</label><input type="text" id="catIcon" placeholder="例如：🧘"></div>
-  <div class="form-group"><label>颜色</label><input type="color" id="catColor" value="#4a90d9" style="height:36px;width:100%;padding:3px"></div>
-  <div class="btn-row"><button class="btn-primary" type="button" onclick="saveCat()">保存</button><button class="btn-cancel" type="button" onclick="closeCatModal()">取消</button></div>
+<div class="overlay" id="stopOverlay" onclick="if(event.target===this)closeStop()"><div class="popup">
+<h3 id="stopTitle"></h3><div style="font-size:22px;font-weight:700;text-align:center;margin-bottom:14px" id="stopDur"></div><div style="font-size:12px;color:#999;text-align:center;margin-bottom:10px" id="stopTime"></div>
+<div class="fg"><label>做了什么</label><textarea id="stopDesc"></textarea></div>
+<div class="br"><button class="dbtn" type="button" onclick="closeStop()">丢弃</button><button class="pbtn" type="button" onclick="saveStop()">保存</button></div>
 </div></div>
 
-<div class="modal-overlay" id="cardOptOverlay" onclick="if(event.target===this)closeCardOpt()"><div class="modal" style="text-align:center">
-  <h3 id="cardOptTitle"></h3>
-  <div style="display:flex;gap:12px;margin-top:16px">
-    <button type="button" onclick="cardStartTimer()" style="flex:1;padding:20px;border-radius:14px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:16px">⏱<br><b>计时</b><br><span style="font-size:12px;color:#888">完成后自动记录</span></button>
-    <button type="button" onclick="cardDirectAdd()" style="flex:1;padding:20px;border-radius:14px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:16px">📅<br><b>添加时段</b><br><span style="font-size:12px;color:#888">直接填写起止时间</span></button>
-  </div>
-  <button type="button" onclick="closeCardOpt()" style="margin-top:14px;padding:8px 24px;border-radius:8px;border:none;background:#f0f0f0;cursor:pointer;font-size:14px">取消</button>
+<div class="overlay" id="catOverlay" onclick="if(event.target===this)closeCat()"><div class="popup">
+<h3 id="catTitle">添加模块</h3>
+<div class="fg"><label>名称</label><input id="catName"></div><div class="fg"><label>图标</label><input id="catIcon" placeholder="📌"></div>
+<div class="fg"><label>颜色</label><input type="color" id="catColor" value="#4a90d9" style="height:36px;width:100%;padding:3px"></div>
+<div class="br"><button class="pbtn" type="button" onclick="saveCat()">保存</button><button class="cbtn" type="button" onclick="closeCat()">取消</button></div>
 </div></div>
 
-<div class="modal-overlay" id="calAddOverlay" onclick="if(event.target===this)closeCalAdd()"><div class="modal">
-  <h3>📅 添加日程</h3>
-  <div class="form-group"><label>选择模块</label><div id="calCatPicker" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
-  <div class="pr"><label>开始</label><input type="datetime-local" id="calAddStart"> <label>结束</label><input type="datetime-local" id="calAddEnd"></div>
-  <div class="form-group"><label>做了什么</label><textarea id="calAddDesc" placeholder="简单描述…" style="min-height:40px"></textarea></div>
-  <div class="btn-row"><button class="btn-cancel" type="button" onclick="closeCalAdd()">取消</button><button class="btn-primary" type="button" onclick="saveCalAdd()">保存</button></div>
+<div class="overlay" id="cardOverlay" onclick="if(event.target===this)closeCard()"><div class="popup" style="text-align:center">
+<h3 id="cardTitle"></h3>
+<div style="display:flex;gap:12px;margin-top:16px">
+<button type="button" onclick="cardTimer()" style="flex:1;padding:20px;border-radius:14px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:16px">计时<br><span style="font-size:12px;color:#888">完成后自动记录</span></button>
+<button type="button" onclick="cardAdd()" style="flex:1;padding:20px;border-radius:14px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;font-size:16px">添加时段<br><span style="font-size:12px;color:#888">直接填写时间</span></button>
+</div>
+<button type="button" onclick="closeCard()" style="margin-top:14px;padding:8px 24px;border-radius:8px;border:none;background:#f0f0f0;cursor:pointer">取消</button>
 </div></div>
 
-<div class="modal-overlay" id="projModalOverlay" onclick="if(event.target===this)closeProjDetail()"><div class="proj-detail" id="projDetailContent"></div></div>
+<div class="overlay" id="calOverlay" onclick="if(event.target===this)closeCalAdd()"><div class="popup">
+<h3>添加日程</h3>
+<div class="fg"><label>模块</label><div id="calCatPick" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+<div class="pr"><label>开始</label><input type="datetime-local" id="calStart"> <label>结束</label><input type="datetime-local" id="calEnd"></div>
+<div class="fg"><label>描述</label><textarea id="calDesc" style="min-height:40px"></textarea></div>
+<div class="br"><button class="cbtn" type="button" onclick="closeCalAdd()">取消</button><button class="pbtn" type="button" onclick="saveCalAdd()">保存</button></div>
+</div></div>
+
+<div class="overlay" id="projOverlay" onclick="if(event.target===this)closeProject()"><div class="pdet" id="projDetail"></div></div>
 
 <script>
-// ═══════════════ Config ═══════════════
-const SB_URL='https://wagkkffwmvwgbcfxczft.supabase.co/rest/v1';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZ2trZmZ3bXZ3Z2JjZnhjemZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTk2ODksImV4cCI6MjA5Mzc5NTY4OX0.0gxJBInSmxtAgMei6CyyQoTG5RdYwcxP6gHg5GqLUPM';
-const PRESETS=[{name:'学英语',icon:'📖',color:'#4a90d9'},{name:'运动',icon:'🏃',color:'#5cb85c'},{name:'读书',icon:'📚',color:'#9b59b6'},{name:'做实验',icon:'🔬',color:'#f0ad4e'},{name:'学习',icon:'✏️',color:'#20b2aa'},{name:'工作',icon:'💼',color:'#e74c3c'}];
-const PRESET_COLORS=['#4a90d9','#5cb85c','#9b59b6','#f0ad4e','#20b2aa','#e74c3c','#ff6b8a','#607d8b'];
-const WEEKDAYS=['一','二','三','四','五','六','日'];
-
+var isReg=false,USER=null,cats=[],recs=[],projs=[],activeRange='day',editCatId=null,pieC=null,barC=null,timer=null,timerInt=null,calDate=new Date(),editPid=null;
+var PRESETS=[{n:'学英语',i:'📖',c:'#4a90d9'},{n:'运动',i:'🏃',c:'#5cb85c'},{n:'读书',i:'📚',c:'#9b59b6'},{n:'做实验',i:'🔬',c:'#f0ad4e'},{n:'学习',i:'✏️',c:'#20b2aa'},{n:'工作',i:'💼',c:'#e74c3c'}];
+var WKD=['一','二','三','四','五','六','日'],PCL=['#4a90d9','#5cb85c','#9b59b6','#f0ad4e','#20b2aa','#e74c3c','#ff6b8a','#607d8b'];
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function fmtDuration(ms){if(ms<=0)return'0分';const h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);return h>0?h+'小时'+(m>0?m+'分':''):m+'分钟'}
-function fmtShort(ms){const h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);return h>0?h+'h'+(m>0?m+'m':''):m+'m'}
-function fmtTime(iso){if(!iso)return'';const d=new Date(iso);return(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
-function fmtClock(ms){const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return(h>0?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(sec).padStart(2,'0')}
-function getRangeDates(range){const now=new Date(),start=new Date();switch(range){case'day':start.setHours(0,0,0,0);break;case'week':const d=now.getDay()||7;start.setDate(now.getDate()-d+1);start.setHours(0,0,0,0);break;case'month':start.setDate(1);start.setHours(0,0,0,0);break;case'year':start.setMonth(0,1);start.setHours(0,0,0,0);break}return{start:start.getTime(),end:now.getTime()}}
-function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function localGet(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
-function localSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
-function userKey(k){return'ht_'+currentUser.username+'_'+k}
-function isOnline(){return navigator.onLine}
-function getPending(){return localGet('ht_pending_sync',[])}
-function setPending(a){localSet('ht_pending_sync',a)}
-function addPending(op){const p=getPending();p.push({...op,ts:Date.now()});setPending(p)}
+function fmtd(ms){if(ms<=0)return'0分';var h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);return h>0?h+'小时'+(m>0?m+'分':''):m+'分钟'}
+function fmts(ms){var h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);return h>0?h+'h'+(m>0?m+'m':''):m+'m'}
+function fmtt(iso){if(!iso)return'';var d=new Date(iso);return(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function fmtc(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return(h>0?h+':'+('0'+m).slice(-2):('0'+m).slice(-2))+':'+('0'+sec).slice(-2)}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function grd(r){var n=new Date(),s=new Date();switch(r){case'day':s.setHours(0,0,0,0);break;case'week':var d=n.getDay()||7;s.setDate(n.getDate()-d+1);s.setHours(0,0,0,0);break;case'month':s.setDate(1);s.setHours(0,0,0,0);break;case'year':s.setMonth(0,1);s.setHours(0,0,0,0);break}return{st:s.getTime(),et:n.getTime()}}
+function L(k,f){try{var v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
+function S(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function uK(k){return'ht_'+USER.username+'_'+k}
+function hpw(p){var h=0,s='ht_'+p;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return'ht_'+Math.abs(h).toString(36)}
 
-// ═══════════════ Supabase ═══════════════
-function sbHeaders(){return{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'}}
-async function sbGet(t,p){const q=p?'?'+new URLSearchParams(p).toString():'';const r=await fetch(SB_URL+'/'+t+q,{headers:sbHeaders()});if(!r.ok)throw new Error(r.status);return r.json()}
-async function sbPost(t,b){const r=await fetch(SB_URL+'/'+t,{method:'POST',headers:{...sbHeaders(),Prefer:'return=representation'},body:JSON.stringify(b)});if(!r.ok)throw new Error(r.status);return r.json()}
-async function sbPatch(t,i,b){await fetch(SB_URL+'/'+t+'?id=eq.'+encodeURIComponent(i),{method:'PATCH',headers:sbHeaders(),body:JSON.stringify(b)})}
-async function sbDelete(t,i){await fetch(SB_URL+'/'+t+'?id=eq.'+encodeURIComponent(i),{method:'DELETE',headers:sbHeaders()})}
-async function syncPending(){
-  const pending=getPending();if(pending.length===0)return;setStatus('syncing');const failed=[];
-  for(const op of pending){try{if(op.table==='records'&&op.action==='insert')await sbPost('records',op.data);else if(op.table==='records'&&op.action==='delete')await sbDelete('records',op.id);else if(op.table==='categories'&&op.action==='insert')await sbPost('categories',op.data);else if(op.table==='categories'&&op.action==='update')await sbPatch('categories',op.id,op.data);else if(op.table==='categories'&&op.action==='delete')await sbDelete('categories',op.id);else if(op.table==='projects'&&op.action==='insert')await sbPost('projects',op.data);else if(op.table==='projects'&&op.action==='update')await sbPatch('projects',op.id,op.data);else if(op.table==='projects'&&op.action==='delete')await sbDelete('projects',op.id)}catch(e){failed.push(op)}}
-  setPending(failed);if(failed.length===0){setStatus('online');document.getElementById('offlineBanner').classList.remove('show');
-    if(currentUser)try{const[cs,rs,ps]=await Promise.all([sbGet('categories',{username:'eq.'+currentUser.username,select:'*'}),sbGet('records',{username:'eq.'+currentUser.username,select:'*',order:'start_time.desc'}),sbGet('projects',{username:'eq.'+currentUser.username,select:'*',order:'created_at.desc'})]);categories=cs;records=rs;projects=ps;localSet(userKey('categories'),cs);localSet(userKey('records'),rs);localSet(userKey('projects'),ps);renderAll()}catch(e){}}
-  if(failed.length>0)setStatus('offline')}
-
-// ═══════════════ Auth ═══════════════
-let currentUser=null,isRegisterMode=false;
-function hashPassword(p){let h=0;const s='ht_salt_'+p;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h=((h<<5)-h)+c;h|=0}return'ht_'+Math.abs(h).toString(36)}
-function loginUser(user,hash){currentUser=user;sessionStorage.setItem('ht_currentUser',JSON.stringify(currentUser));localSet('ht_auth_cache',{username:user.username,passwordHash:hash||'',nickname:user.nickname,ts:Date.now()});document.getElementById('authScreen').classList.add('hidden');document.getElementById('appContainer').classList.remove('hidden');document.getElementById('userAvatar').textContent=(currentUser.nickname||currentUser.username)[0].toUpperCase();document.getElementById('userDisplay').textContent=currentUser.nickname||currentUser.username;['authUsername','authPassword','authNickname'].forEach(id=>document.getElementById(id).value='');document.getElementById('btnAuth').disabled=false;document.getElementById('btnAuth').textContent=isRegisterMode?'注 册':'登 录';initApp()}
-function doLogout(){if(running)stopRunning();currentUser=null;sessionStorage.removeItem('ht_currentUser');document.getElementById('appContainer').classList.add('hidden');document.getElementById('authScreen').classList.remove('hidden')}
-function switchMode(){isRegisterMode=!isRegisterMode;document.getElementById('btnAuth').textContent=isRegisterMode?'注 册':'登 录';document.getElementById('switchText').textContent=isRegisterMode?'已有账户？':'还没有账户？';document.getElementById('switchLink').textContent=isRegisterMode?'去登录':'立即注册';document.getElementById('authNickname').classList.toggle('hidden',!isRegisterMode);document.getElementById('authError').textContent=''}
-
-async function doAuth(){
-  const username=document.getElementById('authUsername').value.trim(),password=document.getElementById('authPassword').value,nickname=document.getElementById('authNickname').value.trim(),errEl=document.getElementById('authError'),btn=document.getElementById('btnAuth');
-  if(!username||!password){errEl.textContent='请填写用户名和密码';return}
-  if(username.length<2){errEl.textContent='用户名至少2个字符';return}
-  if(password.length<3){errEl.textContent='密码至少3个字符';return}
-  btn.disabled=true;btn.textContent='连接中…';const hash=hashPassword(password);
-  try{
-    if(isRegisterMode){const e=await sbGet('users',{username:'eq.'+username,select:'id'});if(e.length>0){errEl.textContent='用户名已存在';btn.disabled=false;btn.textContent='注 册';return}
-      await sbPost('users',{username,password_hash:hash,nickname:nickname||username});for(const p of PRESETS)await sbPost('categories',{id:uid(),username,name:p.name,icon:p.icon,color:p.color,is_preset:true});loginUser({username,nickname:nickname||username},hash)}
-    else{const r=await sbGet('users',{username:'eq.'+username,select:'username,password_hash,nickname'});if(r.length===0){errEl.textContent='用户不存在';btn.disabled=false;btn.textContent='登 录';return}
-      const u=r[0];if(u.password_hash!==hash){errEl.textContent='密码错误';btn.disabled=false;btn.textContent='登 录';return}loginUser({username:u.username,nickname:u.nickname},hash)}return}
-  catch(e){if(!isRegisterMode){const c=localGet('ht_auth_cache',null);if(c&&c.username===username&&c.passwordHash===hash){loginUser({username:c.username,nickname:c.nickname},hash);return}
-    errEl.textContent='连接失败，请检查网络或VPN';btn.disabled=false;btn.textContent='登 录'}else{errEl.textContent='注册需要联网';btn.disabled=false;btn.textContent='注 册'}}
+function doLogin(){
+  var u=document.getElementById('lu').value.trim(),p=document.getElementById('lp').value,n=document.getElementById('ln').value.trim(),e=document.getElementById('loginError');
+  if(!u||!p){e.textContent='请填写用户名和密码';return}
+  if(u.length<2){e.textContent='用户名至少2个字符';return}
+  if(p.length<3){e.textContent='密码至少3个字符';return}
+  var h=hpw(p),users=L('ht_users',{});
+  if(isReg){if(users[u]){e.textContent='用户名已存在';return}users[u]={pw:h,nick:n||u};S('ht_users',users);enter(u,n||u)}
+  else{var ud=users[u];if(!ud){e.textContent='用户不存在';return}if(ud.pw!==h){e.textContent='密码错误';return}enter(u,ud.nick)}
 }
+function enter(u,nick){USER={username:u,nickname:nick};sessionStorage.setItem('ht_u',JSON.stringify(USER));document.getElementById('loginPage').classList.add('hidden');document.getElementById('appMain').classList.remove('hidden');document.getElementById('avatar').textContent=nick[0].toUpperCase();document.getElementById('displayName').textContent=nick;initApp()}
+function doLogout(){if(timer)stopTimer();USER=null;sessionStorage.removeItem('ht_u');document.getElementById('appMain').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden')}
+function toggleReg(){isReg=!isReg;document.getElementById('lbtn').textContent=isReg?'注 册':'登 录';document.getElementById('swText').textContent=isReg?'已有账户？':'还没有账户？';document.getElementById('swLink').textContent=isReg?'去登录':'立即注册';document.getElementById('ln').classList.toggle('hidden',!isReg);document.getElementById('loginError').textContent=''}
 
-// ═══════════════ App State ═══════════════
-let categories=[],records=[],projects=[],activeRange='day',editingCatId=null,pieChart=null,barChart=null,running=null,timerInterval=null,calDate=new Date(),editingProjId=null;
-function setStatus(type){const dot=document.getElementById('syncDot'),txt=document.getElementById('syncText');dot.className='sync-dot '+type;txt.textContent=type==='online'?'云端':type==='syncing'?'同步中…':'离线'}
-async function initApp(){
-  setStatus('syncing');const uname=currentUser.username;
-  try{const[cs,rs,ps]=await Promise.all([sbGet('categories',{username:'eq.'+uname,select:'*'}),sbGet('records',{username:'eq.'+uname,select:'*',order:'start_time.desc'}),sbGet('projects',{username:'eq.'+uname,select:'*',order:'created_at.desc'})]);
-    categories=cs;records=rs;projects=ps;localSet(userKey('categories'),cs);localSet(userKey('records'),rs);localSet(userKey('projects'),ps);setStatus('online');syncPending()}
-  catch(e){setStatus('offline');document.getElementById('offlineBanner').classList.add('show');categories=localGet(userKey('categories'),[]);records=localGet(userKey('records'),[]);projects=localGet(userKey('projects'),[]);
-    if(categories.length===0){categories=PRESETS.map(p=>({id:uid(),username:uname,name:p.name,icon:p.icon,color:p.color,is_preset:true}));localSet(userKey('categories'),categories)}}
-  running=null;clearInterval(timerInterval);timerInterval=null;const sr=sessionStorage.getItem('ht_running');if(sr){running=JSON.parse(sr);timerInterval=setInterval(updateTimerDisplay,1000)}
-  renderAll()}
+function initApp(){
+  cats=L(uK('cats'),null);if(!cats){cats=PRESETS.map(function(p){return{id:uid(),name:p.n,icon:p.i,color:p.c,preset:true}});S(uK('cats'),cats)}
+  recs=L(uK('recs'),[]);projs=L(uK('projs'),[]);
+  timer=null;if(timerInt)clearInterval(timerInt);timerInt=null;
+  var tr=sessionStorage.getItem('ht_tmr');if(tr){timer=JSON.parse(tr);timerInt=setInterval(updTimer,1000)}
+  renderAll();
+}
+// Load Chart.js async - does not block
+(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js';s.async=true;document.head.appendChild(s)})();
+function startTimer(cid){timer={cid:cid,st:Date.now()};sessionStorage.setItem('ht_tmr',JSON.stringify(timer));updTimer();timerInt=setInterval(updTimer,1000);renderAll()}
+function stopTimer(){if(!timer)return;var end=Date.now(),dur=end-timer.st,cid=timer.cid,st=timer.st;timer=null;clearInterval(timerInt);timerInt=null;sessionStorage.removeItem('ht_tmr');if(dur<10000){renderAll();return}openStop(cid,st,end)}
+function openStop(cid,st,end){var c=cats.find(function(x){return x.id===cid});if(!c)return;document.getElementById('stopTitle').innerHTML='<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+';margin-right:6px"></span>'+c.icon+' '+c.name;document.getElementById('stopDur').textContent=fmtd(end-st);document.getElementById('stopTime').textContent=fmtt(new Date(st).toISOString())+' - '+fmtt(new Date(end).toISOString());document.getElementById('stopDesc').value='';document.getElementById('stopOverlay')._p={cid:cid,st:new Date(st).toISOString(),et:new Date(end).toISOString()};document.getElementById('stopOverlay').classList.add('on')}
+function closeStop(){document.getElementById('stopOverlay').classList.remove('on')}
+function saveStop(){var p=document.getElementById('stopOverlay')._p;if(!p)return;recs.unshift({id:uid(),cid:p.cid,st:p.st,et:p.et,desc:document.getElementById('stopDesc').value.trim()});S(uK('recs'),recs);closeStop();renderAll()}
+function updTimer(){var b=document.getElementById('timerBar');if(!timer){b.classList.remove('on');return}b.classList.add('on');document.getElementById('timerClock').textContent=fmtc(Date.now()-timer.st);var c=cats.find(function(x){return x.id===timer.cid});if(c){document.getElementById('timerCat').textContent=c.icon+' '+c.name;document.getElementById('timerDot').style.background=c.color}}
 
-// ═══════════════ Running ═══════════════
-function startRunning(catId){running={categoryId:catId,startTime:Date.now()};sessionStorage.setItem('ht_running',JSON.stringify(running));updateTimerDisplay();timerInterval=setInterval(updateTimerDisplay,1000);renderAll()}
-function stopRunning(){if(!running)return;const end=Date.now(),dur=end-running.startTime,c=running.categoryId,st=running.startTime;running=null;clearInterval(timerInterval);timerInterval=null;sessionStorage.removeItem('ht_running');if(dur<10000){renderAll();return}openStopModal(c,st,end)}
-function openStopModal(catId,st,end){const c=categories.find(x=>x.id===catId);if(!c)return;document.getElementById('modalTitle').innerHTML=`<span class="cat-dot" style="background:${c.color}"></span>${c.icon} ${c.name}`;document.getElementById('modalDuration').textContent=fmtDuration(end-st);document.getElementById('modalTimeInfo').textContent=fmtTime(new Date(st).toISOString())+' — '+fmtTime(new Date(end).toISOString());document.getElementById('recordDesc').value='';document.getElementById('modalOverlay')._p={catId:catId,st:new Date(st).toISOString(),et:new Date(end).toISOString()};document.getElementById('modalOverlay').classList.add('show');setTimeout(()=>document.getElementById('recordDesc').focus(),150)}
-function closeStopModal(){document.getElementById('modalOverlay').classList.remove('show')}
-async function saveStopRecord(){const p=document.getElementById('modalOverlay')._p;if(!p)return;const rec={id:uid(),username:currentUser.username,category_id:p.catId,start_time:p.st,end_time:p.et,description:document.getElementById('recordDesc').value.trim()};records.unshift(rec);localSet(userKey('records'),records);
-  if(isOnline())try{setStatus('syncing');await sbPost('records',rec);setStatus('online')}catch(e){setStatus('offline');addPending({table:'records',action:'insert',data:rec,id:rec.id});document.getElementById('offlineBanner').classList.add('show')}
-  else{setStatus('offline');addPending({table:'records',action:'insert',data:rec,id:rec.id});document.getElementById('offlineBanner').classList.add('show')}closeStopModal();renderAll()}
-function updateTimerDisplay(){const b=document.getElementById('runningBanner');if(!running){b.classList.remove('show');return}b.classList.add('show');document.getElementById('rbTimer').textContent=fmtClock(Date.now()-running.startTime);const c=categories.find(x=>x.id===running.categoryId);if(c){document.getElementById('rbCat').textContent=c.icon+' '+c.name;document.getElementById('rbDot').style.background=c.color}}
+function renderAll(){renderCats();renderTL();renderStats();renderCal();renderProjs();renderCatList();updTimer()}
+function renderCats(){var g=document.getElementById('catGrid'),ts=new Date();ts.setHours(0,0,0,0);var tm=ts.getTime(),tt={};recs.forEach(function(r){var st=new Date(r.st).getTime();if(st>=tm)tt[r.cid]=(tt[r.cid]||0)+(new Date(r.et).getTime()-st)});var h='';cats.forEach(function(c){var d=tt[c.id]||0,ir=timer&&timer.cid===c.id;h+='<div class="cat'+(ir?' on':'')+'" style="background:'+c.color+'" onclick="clickCat(\''+c.id+'\')"><div class="ic">'+c.icon+'</div><div class="nm">'+c.name+'</div>'+(ir?'<div class="rl">计时中</div>':'')+'<div class="td">'+(d>0&&!ir?'今日 '+fmtd(d):(ir?'':'今日 0 分钟'))+'</div></div>'});h+='<div class="cat add" onclick="openCat()"><span style="font-size:22px">+</span> 添加</div>';g.innerHTML=h}
+function clickCat(id){if(timer){if(timer.cid===id){stopTimer();return}if(!confirm('切换？'))return;stopTimer();setTimeout(function(){if(!timer)startTimer(id)},50)}else showCard(id)}
+function showCard(cid){var c=cats.find(function(x){return x.id===cid});if(!c)return;document.getElementById('cardTitle').innerHTML='<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+';margin-right:6px"></span>'+c.icon+' '+c.name;document.getElementById('cardOverlay')._cid=cid;document.getElementById('cardOverlay').classList.add('on')}
+function closeCard(){document.getElementById('cardOverlay').classList.remove('on')}
+function cardTimer(){var cid=document.getElementById('cardOverlay')._cid;closeCard();startTimer(cid)}
+function cardAdd(){var cid=document.getElementById('cardOverlay')._cid;closeCard();quickAdd(cid)}
+function quickAdd(cid){var n=new Date(),st=new Date(n);st.setMinutes(0,0,0);var ed=new Date(n);ed.setHours(ed.getHours()+1,0,0,0);document.getElementById('calStart').value=tlISO(st);document.getElementById('calEnd').value=tlISO(ed);document.getElementById('calDesc').value='';var pk='';cats.forEach(function(ca){pk+='<div style="padding:7px 12px;border-radius:8px;background:'+ca.color+';color:#fff;cursor:pointer;font-size:13px" onclick="pickCalCat(\''+ca.id+'\',this)">'+ca.icon+' '+ca.name+'</div>'});document.getElementById('calCatPick').innerHTML=pk;document.getElementById('calOverlay')._cid=cid;document.getElementById('calOverlay').classList.add('on');setTimeout(function(){var tn=cats.find(function(x){return x.id===cid}).name;document.querySelectorAll('#calCatPick div').forEach(function(el){if(el.textContent.indexOf(tn)>=0)el.style.outline='3px solid #1a1a2e'})},100)}
+function renderTL(){var tl=document.getElementById('timeline'),ts=new Date();ts.setHours(0,0,0,0);var tm=ts.getTime(),tr=recs.filter(function(r){return new Date(r.st).getTime()>=tm}).sort(function(a,b){return new Date(b.st)-new Date(a.st)});var h='<h3>今日记录</h3>';if(tr.length===0)h+='<div class="ehint">还没有记录，点击上方模块开始</div>';else{var cm={};cats.forEach(function(c){cm[c.id]=c});tr.forEach(function(r){var c=cm[r.cid]||{name:'未知',color:'#ccc'},d=new Date(r.et).getTime()-new Date(r.st).getTime();h+='<div class="tl item"><div class="tl dot" style="background:'+c.color+'"></div><div class="tl inf"><div class="tl cn">'+c.name+'</div><div class="tl tm">'+fmtt(r.st)+' - '+fmtt(r.et)+'</div>'+(r.desc?'<div class="tl ds">'+esc(r.desc)+'</div>':'')+'</div><div class="tl dr">'+fmts(d)+'</div><button class="tl dl" onclick="delRec(\''+r.id+'\')">x</button></div>'})}tl.innerHTML=h}
+function delRec(id){if(!confirm('删除？'))return;recs=recs.filter(function(r){return r.id!==id});S(uK('recs'),recs);renderAll()}
 
-// ═══════════════ Render ═══════════════
-function renderAll(){renderCatGrid();renderTimeline();renderStats();renderCalendar();renderProjList();renderCatList();updateTimerDisplay()}
-function renderCatGrid(){const grid=document.getElementById('catGrid'),ts=new Date();ts.setHours(0,0,0,0);const tm=ts.getTime(),tt={};records.forEach(r=>{const st=new Date(r.start_time).getTime();if(st>=tm)tt[r.category_id]=(tt[r.category_id]||0)+(new Date(r.end_time).getTime()-st)});let h='';categories.forEach(c=>{const d=tt[c.id]||0,ir=running&&running.categoryId===c.id;h+=`<div class="cat-card${ir?' running':''}" style="background:${c.color}" onclick="handleCardClick('${c.id}')"><div class="cat-icon">${c.icon}</div><div class="cat-name">${c.name}</div>${ir?'<div class="cat-running-label">⏱ 计时中</div>':''}<div class="cat-today">${d>0&&!ir?'今日 '+fmtDuration(d):(ir?'':'今日 0 分钟')}</div></div>`});h+=`<div class="cat-card add-card" onclick="openCatModal()"><span style="font-size:22px">+</span> 添加</div>`;grid.innerHTML=h}
-function handleCardClick(id){if(running){if(running.categoryId===id){stopRunning();return}if(!confirm('当前「'+(categories.find(c=>c.id===running.categoryId)||{}).name+'」正在计时，要切换吗？'))return;stopRunning();setTimeout(()=>{if(!running)startRunning(id)},50)}else showCardOption(id)}
-function showCardOption(catId){const c=categories.find(x=>x.id===catId);if(!c)return;document.getElementById('cardOptTitle').innerHTML=`<span class="cat-dot" style="background:${c.color}"></span>${c.icon} ${c.name}`;document.getElementById('cardOptOverlay')._catId=catId;document.getElementById('cardOptOverlay').classList.add('show')}
-function closeCardOpt(){document.getElementById('cardOptOverlay').classList.remove('show')}
-function cardStartTimer(){const catId=document.getElementById('cardOptOverlay')._catId;closeCardOpt();startRunning(catId)}
-function cardDirectAdd(){const catId=document.getElementById('cardOptOverlay')._catId;closeCardOpt();quickAddRecord(catId)}
-function quickAddRecord(catId){const now=new Date(),st=new Date(now);st.setMinutes(0,0,0);const ed=new Date(now);ed.setHours(ed.getHours()+1,0,0,0);document.getElementById('calAddStart').value=toLocalISO(st);document.getElementById('calAddEnd').value=toLocalISO(ed);document.getElementById('calAddDesc').value='';let pk='';categories.forEach(ca=>{pk+=`<div style="padding:7px 12px;border-radius:8px;background:${ca.color};color:#fff;cursor:pointer;font-size:13px" onclick="selectCalCat('${ca.id}',this)">${ca.icon} ${ca.name}</div>`});document.getElementById('calCatPicker').innerHTML=pk;document.getElementById('calAddOverlay')._selCat=catId;document.getElementById('calAddOverlay').classList.add('show');setTimeout(()=>{const c=categories.find(x=>x.id===catId);if(c){document.querySelectorAll('#calCatPicker div').forEach(el=>{if(el.textContent.includes(c.name))el.style.outline='3px solid #1a1a2e'})}},100)}
-function renderTimeline(){const tl=document.getElementById('timeline'),ts=new Date();ts.setHours(0,0,0,0);const tm=ts.getTime(),tr=records.filter(r=>new Date(r.start_time).getTime()>=tm).sort((a,b)=>new Date(b.start_time)-new Date(a.start_time));let h='<h3>📋 今日记录</h3>';if(tr.length===0)h+='<div class="empty-hint" style="padding:20px;text-align:center">还没有记录，点击上方模块开始</div>';else{const cm={};categories.forEach(c=>cm[c.id]=c);tr.forEach(r=>{const c=cm[r.category_id]||{name:'未知',color:'#ccc'},d=new Date(r.end_time).getTime()-new Date(r.start_time).getTime();h+=`<div class="tl-item"><div class="tl-dot" style="background:${c.color}"></div><div class="tl-info"><div class="tl-cat">${c.name}</div><div class="tl-time">${fmtTime(r.start_time)} — ${fmtTime(r.end_time)}</div>${r.description?'<div class="tl-desc">'+escHtml(r.description)+'</div>':''}</div><div class="tl-duration">${fmtShort(d)}</div><button class="tl-del" onclick="deleteRecord('${r.id}')">×</button></div>`})}tl.innerHTML=h}
-async function deleteRecord(id){if(!confirm('删除？'))return;records=records.filter(r=>r.id!==id);localSet(userKey('records'),records);if(isOnline())try{setStatus('syncing');await sbDelete('records',id);setStatus('online')}catch(e){setStatus('offline');addPending({table:'records',action:'delete',id})}else{setStatus('offline');addPending({table:'records',action:'delete',id})}renderAll()}
+function calMove(d){calDate.setDate(calDate.getDate()+d);renderCal()}
+function calToday(){calDate=new Date();renderCal()}
+function fmtDay(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+WKD[d.getDay()?d.getDay()-1:6]}
+function renderCal(){
+  document.getElementById('calTitle').textContent=fmtDay(calDate);
+  var grid=document.getElementById('calGrid'),start=new Date(calDate);start.setHours(0,0,0,0);var end=new Date(calDate);end.setHours(23,59,59,999);var sm=start.getTime(),em=end.getTime(),ds=calDate.toISOString().slice(0,10);
+  var evts=[];recs.forEach(function(r){var st=new Date(r.st).getTime(),et=new Date(r.et).getTime();if(st>=sm&&et<=em){var c=cats.find(function(x){return x.id===r.cid})||{};evts.push({title:(c.icon||'')+' '+(c.name||''),s:st,e:et,color:c.color||'#aaa',desc:r.desc,type:'rec'})}});
+  projs.forEach(function(p){if(p.slots&&Array.isArray(p.slots))p.slots.forEach(function(s){var st=new Date(s.d+'T'+s.st).getTime(),et=new Date(s.d+'T'+s.et).getTime();if(st>=sm&&et<=em)evts.push({title:p.title,s:st,e:et,color:'#1a1a2e',desc:s.note||'',type:'proj',pid:p.id})})});
+  var dow=calDate.getDay(),dow1=dow===0?7:dow;
+  var flex=projs.filter(function(p){return p.status==='active'&&p.showCal!==false&&p.days&&Array.isArray(p.days)&&p.days.indexOf(dow1)>=0});
+  var fh='';if(flex.length>0){fh='<div class="cflex">';flex.forEach(function(p){var ms=p.ms||[];var dn=ms.filter(function(m){return m.done}).length;fh+='<div class="cfitem" onclick="openProject(\''+p.id+'\')"><span style="flex:1;font-weight:500">'+esc(p.title)+'</span><span style="color:#888">'+(p.dur||1)+'h '+dn+'/'+ms.length+'</span></div>'});fh+='</div>'}
+  var tot=0;evts.forEach(function(e){tot+=e.e-e.s});document.getElementById('calTotal').textContent='总时长：'+fmtd(tot);
+  var html=fh;for(var h=0;h<24;h++){var hs=h*3600000+sm,he=(h+1)*3600000+sm,hevs=evts.filter(function(e){return e.s<he&&e.e>hs});
+    html+='<div class="chour"><div class="chlbl">'+('0'+h).slice(-2)+':00</div><div class="chcon" onclick="calClick(event,'+h+')">';
+    hevs.forEach(function(e){var top=Math.max(0,(e.s-hs)/3600000*44),hg=Math.max(6,(Math.min(he,e.e)-Math.max(hs,e.s))/3600000*44);
+      html+='<div class="cevt'+(e.type==='proj'?' tsk':'')+'" style="top:'+top+'px;height:'+hg+'px;background:'+e.color+'" onclick="event.stopPropagation();alert(\''+esc(e.desc||e.title)+'\')"><div style="font-weight:600;white-space:nowrap;overflow:hidden;font-size:10px">'+esc(e.title)+'</div><div style="opacity:.8;font-size:9px">'+fmtt(new Date(e.s).toISOString())+'-'+fmtt(new Date(e.e).toISOString())+'</div></div>'});html+='</div></div>'}
+  grid.innerHTML=html;document.getElementById('calEmpty').style.display=(evts.length===0&&flex.length===0)?'block':'none'}
+function calClick(e,hour){if(e.target.classList.contains('cevt')||e.target.closest('.cevt'))return;calQuickAdd(hour)}
+function calQuickAdd(hour){var cd=calDate,n=new Date(),st,ed;if(typeof hour!=='undefined'&&hour>=0){st=new Date(cd);st.setHours(hour,0,0,0);ed=new Date(cd);ed.setHours(hour+1,0,0,0)}else{st=new Date(n);st.setMinutes(0,0,0);ed=new Date(n);ed.setHours(ed.getHours()+1,0,0,0)}document.getElementById('calStart').value=tlISO(st);document.getElementById('calEnd').value=tlISO(ed);document.getElementById('calDesc').value='';var pk='';cats.forEach(function(c){pk+='<div style="padding:7px 12px;border-radius:8px;background:'+c.color+';color:#fff;cursor:pointer;font-size:13px" onclick="pickCalCat(\''+c.id+'\',this)">'+c.icon+' '+c.name+'</div>'});document.getElementById('calCatPick').innerHTML=pk;document.getElementById('calOverlay')._cid=null;document.getElementById('calOverlay').classList.add('on')}
+function pickCalCat(id,el){document.querySelectorAll('#calCatPick div').forEach(function(d){d.style.outline=''});el.style.outline='3px solid #1a1a2e';document.getElementById('calOverlay')._cid=id}
+function closeCalAdd(){document.getElementById('calOverlay').classList.remove('on')}
+function tlISO(d){var tz=d.getTimezoneOffset();return new Date(d.getTime()-tz*60000).toISOString().slice(0,16)}
+function saveCalAdd(){var cid=document.getElementById('calOverlay')._cid;if(!cid)return alert('请选模块');var st=document.getElementById('calStart').value,et=document.getElementById('calEnd').value;if(!st||!et)return;if(new Date(st).getTime()>=new Date(et).getTime())return alert('结束需晚于开始');recs.unshift({id:uid(),cid:cid,st:new Date(st).toISOString(),et:new Date(et).toISOString(),desc:document.getElementById('calDesc').value.trim()});S(uK('recs'),recs);closeCalAdd();renderAll()}
 
-// ═══════════════ Calendar ═══════════════
-function calShift(d){calDate.setDate(calDate.getDate()+d);renderCalendar()}
-function calGoToday(){calDate=new Date();renderCalendar()}
-function fmtDate(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+WEEKDAYS[d.getDay()?d.getDay()-1:6]}
-function renderCalendar(){
-  document.getElementById('calTitle').textContent=fmtDate(calDate);
-  const grid=document.getElementById('calGrid'),start=new Date(calDate);start.setHours(0,0,0,0);const end=new Date(calDate);end.setHours(23,59,59,999);const sm=start.getTime(),em=end.getTime(),calDateStr=calDate.toISOString().slice(0,10);
-  const events=[];
-  records.forEach(r=>{const st=new Date(r.start_time).getTime(),et=new Date(r.end_time).getTime();if(st>=sm&&et<=em){const c=categories.find(x=>x.id===r.category_id)||{};events.push({title:(c.icon||'')+' '+(c.name||'未知'),start:st,end:et,color:c.color||'#aaa',desc:r.description,type:'record'})}});
-  projects.forEach(p=>{if(p.calendar_slots&&Array.isArray(p.calendar_slots))p.calendar_slots.forEach(s=>{const st=new Date(s.date+'T'+s.startTime).getTime(),et=new Date(s.date+'T'+s.endTime).getTime();if(st>=sm&&et<=em)events.push({title:'📌 '+p.title,start:st,end:et,color:'#1a1a2e',desc:s.note||'',type:'project',projId:p.id})})});
-  const todayDow=calDate.getDay(),todayDow1=todayDow===0?7:todayDow;
-  const flexProjs=projects.filter(p=>p.status==='active'&&p.show_on_calendar!==false&&p.frequency_days&&Array.isArray(p.frequency_days)&&p.frequency_days.includes(todayDow1)&&!(p.calendar_slots&&Array.isArray(p.calendar_slots)&&p.calendar_slots.some(s=>s.date===calDateStr)));
-  let flexHtml='';if(flexProjs.length>0){flexHtml='<div class="cal-flex-tasks">';flexProjs.forEach(p=>{const ms=p.milestones||[];const done=ms.filter(m=>m.completed).length;flexHtml+=`<div class="cal-flex-item" onclick="openProjectDetail('${p.id}')"><span>📂</span><span style="flex:1;font-weight:500">${escHtml(p.title)}</span><span style="color:#888">${p.duration_per_session||1}h</span><span style="color:#888">${done}/${ms.length}</span></div>`});flexHtml+='</div>'}
-  let totalMs=0;events.forEach(e=>totalMs+=e.end-e.start);document.getElementById('calTotal').textContent='总时长：'+fmtDuration(totalMs);
-  let html=flexHtml;for(let hour=0;hour<24;hour++){const hStart=hour*3600000+sm,hEnd=(hour+1)*3600000+sm;const hourEvents=events.filter(e=>e.start<hEnd&&e.end>hStart);
-    html+=`<div class="cal-hour"><div class="cal-hour-label">${String(hour).padStart(2,'0')}:00</div><div class="cal-hour-content" data-hour="${hour}" onclick="calSlotClick(event,${hour})">`;
-    hourEvents.forEach(e=>{const top=Math.max(0,(e.start-hStart)/3600000*44),hgt=Math.max(6,(Math.min(hEnd,e.end)-Math.max(hStart,e.start))/3600000*44);
-      html+=`<div class="cal-event${e.type==='project'?' task-event':''}" style="top:${top}px;height:${hgt}px;background:${e.color}" onclick="event.stopPropagation();calEventClick('${e.type}','${e.projId||''}','${escHtml(e.desc||'')}')"><div class="ev-title">${escHtml(e.title)}</div><div class="ev-time">${fmtTime(new Date(e.start).toISOString())}-${fmtTime(new Date(e.end).toISOString())}</div></div>`});html+='</div></div>'}
-  grid.innerHTML=html;document.getElementById('calEmpty').style.display=(events.length===0&&flexProjs.length===0)?'block':'none'}
-function calEventClick(type,projId,desc){if(desc)alert(desc);if(type==='project'&&projId)openProjectDetail(projId)}
-function calSlotClick(e,hour){if(e.target.classList.contains('cal-event')||e.target.closest('.cal-event'))return;calAddEntry(hour)}
-function calAddEntry(hour){const cd=calDate,now=new Date();let st,ed;if(hour>=0){st=new Date(cd);st.setHours(hour,0,0,0);ed=new Date(cd);ed.setHours(hour+1,0,0,0)}else{st=new Date(now);st.setMinutes(0,0,0);ed=new Date(now);ed.setHours(ed.getHours()+1,0,0,0)}document.getElementById('calAddStart').value=toLocalISO(st);document.getElementById('calAddEnd').value=toLocalISO(ed);document.getElementById('calAddDesc').value='';let pk='';categories.forEach(c=>{pk+=`<div style="padding:7px 12px;border-radius:8px;background:${c.color};color:#fff;cursor:pointer;font-size:13px" onclick="selectCalCat('${c.id}',this)">${c.icon} ${c.name}</div>`});document.getElementById('calCatPicker').innerHTML=pk;document.getElementById('calAddOverlay')._selCat=null;document.getElementById('calAddOverlay').classList.add('show')}
-function selectCalCat(id,el){document.querySelectorAll('#calCatPicker div').forEach(d=>d.style.outline='');el.style.outline='3px solid #1a1a2e';document.getElementById('calAddOverlay')._selCat=id}
-function closeCalAdd(){document.getElementById('calAddOverlay').classList.remove('show')}
-function toLocalISO(d){const tz=d.getTimezoneOffset();return new Date(d.getTime()-tz*60000).toISOString().slice(0,16)}
-async function saveCalAdd(){const cid=document.getElementById('calAddOverlay')._selCat;if(!cid)return alert('请选模块');const st=document.getElementById('calAddStart').value,et=document.getElementById('calAddEnd').value;if(!st||!et)return;if(new Date(st).getTime()>=new Date(et).getTime())return alert('结束需晚于开始');const rec={id:uid(),username:currentUser.username,category_id:cid,start_time:new Date(st).toISOString(),end_time:new Date(et).toISOString(),description:document.getElementById('calAddDesc').value.trim()};records.unshift(rec);localSet(userKey('records'),records);
-  if(isOnline())try{setStatus('syncing');await sbPost('records',rec);setStatus('online')}catch(e){setStatus('offline');addPending({table:'records',action:'insert',data:rec,id:rec.id});document.getElementById('offlineBanner').classList.add('show')}
-  else{setStatus('offline');addPending({table:'records',action:'insert',data:rec,id:rec.id});document.getElementById('offlineBanner').classList.add('show')}closeCalAdd();renderAll()}
+function renderStats(){if(!document.getElementById('page-stats').classList.contains('on'))return;if(typeof Chart==='undefined')return;var r=grd(activeRange);var fr=recs.filter(function(x){var t=new Date(x.st).getTime();return t>=r.st&&t<=r.et});var cm={};cats.forEach(function(c){cm[c.id]={name:c.name,color:c.color,total:0}});var tm=0;fr.forEach(function(x){var d=new Date(x.et).getTime()-new Date(x.st).getTime();if(d>0&&cm[x.cid]){cm[x.cid].total+=d;tm+=d}});var ents=Object.entries(cm).filter(function(e){return e[1].total>0}),lbs=ents.map(function(e){return e[1].name}),dt=ents.map(function(e){return e[1].total}),cls=ents.map(function(e){return e[1].color});document.getElementById('statsSummary').innerHTML='<div class="si"><div class="v">'+fmtd(tm)+'</div><div class="l">总时长</div></div><div class="si"><div class="v">'+ents.length+'</div><div class="l">活跃模块</div></div><div class="si"><div class="v">'+fr.length+'</div><div class="l">记录条数</div></div>';if(pieC)pieC.destroy();if(barC)barC.destroy();var pc=document.getElementById('pieC').getContext('2d'),bc=document.getElementById('barC').getContext('2d');if(ents.length===0){pieC=new Chart(pc,{type:'doughnut',data:{labels:['暂无数据'],datasets:[{data:[1],backgroundColor:['#eee']}]},options:{plugins:{legend:{display:false}}}});barC=new Chart(bc,{type:'bar',data:{labels:['暂无数据'],datasets:[{data:[0],backgroundColor:['#eee']}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});return}pieC=new Chart(pc,{type:'doughnut',data:{labels:lbs,datasets:[{data:dt,backgroundColor:cls,borderWidth:2,borderColor:'#fff'}]},options:{plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}},tooltip:{callbacks:{label:function(c){return' '+c.label+': '+fmtd(c.raw)+' ('+(c.raw/tm*100).toFixed(1)+'%)'}}}}});barC=new Chart(bc,{type:'bar',data:{labels:lbs,datasets:[{label:'时长(分钟)',data:dt.map(function(d){return Math.round(d/60000)}),backgroundColor:cls,borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,title:{display:true,text:'分钟'}},x:{ticks:{maxRotation:45}}},animation:{duration:300}})}
+function ppg(p){var ms=p.ms||[];if(ms.length===0)return p.status==='done'?100:0;return Math.round(ms.filter(function(m){return m.done}).length/ms.length*100)}
+function renderProjs(){var list=document.getElementById('projList'),act=projs.filter(function(p){return p.status!=='done'}),dn=projs.filter(function(p){return p.status==='done'});if(projs.length===0){list.innerHTML='<div class="ehint">暂无项目</div>';return}var h='';act.forEach(function(p){var pp=ppg(p),days=p.days||[1,2,3,4,5];h+='<div class="pcard" onclick="openProject(\''+p.id+'\')"><div class="phd"><div class="pttl">'+esc(p.title)+'</div><span class="pst '+(p.status==='active'?'a':'p')+'">'+(p.status==='active'?'进行中':'暂停')+'</span></div><div class="pbar"><div style="width:'+pp+'%;background:'+(pp<30?'#e74c3c':pp<70?'#f0ad4e':'#5cb85c')+'"></div></div><div class="pmeta"><span>进度 '+pp+'%</span><span>截止 '+(p.end||'').slice(0,10)+'</span><span>每次 '+(p.dur||1)+'h</span></div><div class="pdays">'+WKD.map(function(d,i){return'<span class="'+(days.indexOf(i+1)>=0?'on':'')+'">'+d+'</span>'}).join('')+'</div></div>'});dn.forEach(function(p){h+='<div class="pcard" onclick="openProject(\''+p.id+'\')" style="opacity:.6"><div class="phd"><div class="pttl">'+esc(p.title)+'</div><span class="pst d">已完成</span></div><div class="pbar"><div style="width:100%;background:#5cb85c"></div></div></div>'});list.innerHTML=h}
+function openProject(pid){editPid=pid||null;var p={title:'',desc:'',start:new Date().toISOString().slice(0,10),end:new Date(Date.now()+30*86400000).toISOString().slice(0,10),days:[1,2,3,4,5],dur:1,showCal:true,ms:[],status:'active'};if(pid){var f=projs.find(function(x){return x.id===pid});if(f){p.title=f.title;p.desc=f.desc||'';p.start=f.start;p.end=f.end;p.days=f.days||[1,2,3,4,5];p.dur=f.dur||1;p.showCal=f.showCal!==false;p.ms=f.ms||[];p.status=f.status}}var days=p.days||[];var ds='';WKD.forEach(function(d,i){ds+='<label class="'+(days.indexOf(i+1)>=0?'on':'')+'"><input type="checkbox" value="'+(i+1)+'" '+(days.indexOf(i+1)>=0?'checked':'')+' onchange="this.parentElement.classList.toggle(\'on\',this.checked)">'+d+'</label>'});var ms=p.ms||[];var mh='<div class="ms-list">';ms.forEach(function(m,i){mh+='<div class="ms'+(m.done?' done':'')+'"><input type="checkbox" '+(m.done?'checked':'')+' onchange="togMS('+i+')"><span class="mt">'+esc(m.title)+'</span><button class="mx" onclick="delMS('+i+')">x</button></div>'});mh+='</div>';document.getElementById('projDetail').innerHTML='<h3>'+(pid?'编辑项目':'新建项目')+'</h3><div class="pr"><label>标题</label><input id="pdTitle" value="'+esc(p.title)+'"></div><div class="pr"><label>描述</label><input id="pdDesc" value="'+esc(p.desc)+'"></div><div class="pr"><label>开始</label><input type="date" id="pdStart" value="'+(p.start||'').slice(0,10)+'"> <label>截止</label><input type="date" id="pdEnd" value="'+(p.end||'').slice(0,10)+'"></div><div class="pr"><label>频率</label><div class="week-picker">'+ds+'</div></div><div class="pr"><label>每次</label><input type="number" id="pdDur" value="'+(p.dur||1)+'" step="0.5" min="0" style="width:60px"> <span style="font-size:12px;color:#888">小时</span></div><div class="pr"><label>日历</label><select id="pdCal"><option value="1" '+(p.showCal!==false?'selected':'')+'>显示</option><option value="0" '+(p.showCal===false?'selected':'')+'>隐藏</option></select> <label>状态</label><select id="pdStatus"><option value="active" '+(p.status==='active'?'selected':'')+'>进行中</option><option value="paused" '+(p.status==='paused'?'selected':'')+'>暂停</option><option value="done" '+(p.status==='done'?'selected':'')+'>已完成</option></select></div><div style="font-size:13px;font-weight:600;margin:12px 0 6px">里程碑 ('+ms.filter(function(m){return m.done}).length+'/'+ms.length+')</div>'+mh+'<div class="msrow"><input id="pdNewMS" placeholder="新里程碑"><button onclick="addMS()">+添加</button></div><div class="br" style="margin-top:14px">'+(pid?'<button class="dbtn" onclick="delProj(\''+pid+'\')">删除项目</button>':'')+'<button class="cbtn" onclick="closeProject()">取消</button><button class="pbtn" onclick="saveProject()">保存</button></div>';document.getElementById('projOverlay').classList.add('on');document.getElementById('projOverlay')._ms=JSON.parse(JSON.stringify(ms));document.getElementById('projOverlay')._pid=pid}
+function closeProject(){document.getElementById('projOverlay').classList.remove('on');editPid=null}
+function togMS(i){var ms=document.getElementById('projOverlay')._ms;if(ms[i])ms[i].done=!ms[i].done}
+function delMS(i){var ms=document.getElementById('projOverlay')._ms;ms.splice(i,1);var pid=document.getElementById('projOverlay')._pid;if(pid)openProject(pid)}
+function addMS(){var t=document.getElementById('pdNewMS').value.trim();if(!t)return;var ms=document.getElementById('projOverlay')._ms;ms.push({title:t,done:false});var pid=document.getElementById('projOverlay')._pid;if(pid)openProject(pid);document.getElementById('pdNewMS').value=''}
+function saveProject(){var title=document.getElementById('pdTitle').value.trim();if(!title)return alert('请输入名称');var days=[];document.querySelectorAll('.week-picker input:checked').forEach(function(cb){days.push(parseInt(cb.value))});var ms=document.getElementById('projOverlay')._ms||[];var data={title:title,desc:document.getElementById('pdDesc').value.trim(),start:document.getElementById('pdStart').value,end:document.getElementById('pdEnd').value,days:days,dur:parseFloat(document.getElementById('pdDur').value)||0,showCal:document.getElementById('pdCal').value==='1',ms:ms,status:document.getElementById('pdStatus').value};if(editPid){var idx=projs.findIndex(function(x){return x.id===editPid});if(idx>=0)projs[idx]={id:editPid,title:data.title,desc:data.desc,start:data.start,end:data.end,days:data.days,dur:data.dur,showCal:data.showCal,ms:data.ms,status:data.status}}else{projs.push({id:uid(),title:data.title,desc:data.desc,start:data.start,end:data.end,days:data.days,dur:data.dur,showCal:data.showCal,ms:data.ms,status:data.status})}S(uK('projs'),projs);closeProject();renderAll()}
+function delProj(id){if(!confirm('删除？'))return;projs=projs.filter(function(x){return x.id!==id});S(uK('projs'),projs);closeProject();renderAll()}
 
-// ═══════════════ Stats ═══════════════
-function renderStats(){if(!document.getElementById('panel-stats').classList.contains('active'))return;const{start,end}=getRangeDates(activeRange);const fr=records.filter(r=>{const t=new Date(r.start_time).getTime();return t>=start&&t<=end});const cm={};categories.forEach(c=>{cm[c.id]={name:c.name,color:c.color,total:0}});let tm=0;fr.forEach(r=>{const d=new Date(r.end_time).getTime()-new Date(r.start_time).getTime();if(d>0&&cm[r.category_id]){cm[r.category_id].total+=d;tm+=d}});const ents=Object.entries(cm).filter(([_,v])=>v.total>0),lbs=ents.map(([_,v])=>v.name),dt=ents.map(([_,v])=>v.total),cls=ents.map(([_,v])=>v.color);document.getElementById('statsSummary').innerHTML=`<div class="stat-item"><div class="val">${fmtDuration(tm)}</div><div class="lbl">总时长</div></div><div class="stat-item"><div class="val">${ents.length}</div><div class="lbl">活跃模块</div></div><div class="stat-item"><div class="val">${fr.length}</div><div class="lbl">记录条数</div></div>`;if(pieChart)pieChart.destroy();if(barChart)barChart.destroy();const pc=document.getElementById('pieChart').getContext('2d'),bc=document.getElementById('barChart').getContext('2d');if(ents.length===0){pieChart=new Chart(pc,{type:'doughnut',data:{labels:['暂无数据'],datasets:[{data:[1],backgroundColor:['#eee']}]},options:{plugins:{legend:{display:false}}}});barChart=new Chart(bc,{type:'bar',data:{labels:['暂无数据'],datasets:[{data:[0],backgroundColor:['#eee']}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});return}pieChart=new Chart(pc,{type:'doughnut',data:{labels:lbs,datasets:[{data:dt,backgroundColor:cls,borderWidth:2,borderColor:'#fff'}]},options:{plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${fmtDuration(ctx.raw)} (${((ctx.raw/tm)*100).toFixed(1)}%)`}}}}});barChart=new Chart(bc,{type:'bar',data:{labels:lbs,datasets:[{label:'时长(分钟)',data:dt.map(d=>Math.round(d/60000)),backgroundColor:cls,borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,title:{display:true,text:'分钟'}},x:{ticks:{maxRotation:45}}},animation:{duration:300}})}
+function renderCatList(){var l=document.getElementById('catList'),h='';cats.forEach(function(c){var t=recs.filter(function(r){return r.cid===c.id}).length;h+='<div class="mitem"><div class="mdot" style="background:'+c.color+'"></div><div class="minfo"><div class="mn">'+c.icon+' '+c.name+'</div><div class="mm">'+t+' 条记录'+(c.preset?' · 预设':'')+'</div></div><div class="mbtn"><button onclick="editCat(\''+c.id+'\')">编辑</button>'+(c.preset?'':'<button class="del" onclick="delCat(\''+c.id+'\')">删除</button>')+'</div></div>'});if(cats.length===0)h='<div class="ehint">暂无模块</div>';l.innerHTML=h}
+function openCat(cid){editCatId=cid||null;if(cid){var c=cats.find(function(x){return x.id===cid});if(!c)return;document.getElementById('catTitle').textContent='编辑模块';document.getElementById('catName').value=c.name;document.getElementById('catIcon').value=c.icon;document.getElementById('catColor').value=c.color}else{document.getElementById('catTitle').textContent='添加模块';document.getElementById('catName').value='';document.getElementById('catIcon').value='📌';document.getElementById('catColor').value=PCL[Math.floor(Math.random()*PCL.length)]}document.getElementById('catOverlay').classList.add('on')}
+function closeCat(){document.getElementById('catOverlay').classList.remove('on');editCatId=null}
+function saveCat(){var nm=document.getElementById('catName').value.trim(),ic=document.getElementById('catIcon').value.trim()||'📌',cl=document.getElementById('catColor').value;if(!nm)return alert('请输入名称');if(editCatId){var c=cats.find(function(x){return x.id===editCatId});if(c){c.name=nm;c.icon=ic;c.color=cl}}else{cats.push({id:uid(),name:nm,icon:ic,color:cl,preset:false})}S(uK('cats'),cats);closeCat();renderAll()}
+function editCat(id){openCat(id)}
+function delCat(id){var c=cats.find(function(x){return x.id===id});if(!c||c.preset)return;if(!confirm('删除"'+c.name+'"？'))return;cats=cats.filter(function(x){return x.id!==id});S(uK('cats'),cats);renderAll()}
+function exportAll(){var d={cats:cats,recs:recs,projs:projs};var b=new Blob([JSON.stringify(d)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='habit-'+new Date().toISOString().slice(0,10)+'.json';a.click()}
+function importAll(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.cats)cats=d.cats;if(d.recs)recs=d.recs;if(d.projs)projs=d.projs;S(uK('cats'),cats);S(uK('recs'),recs);S(uK('projs'),projs);renderAll();alert('导入成功！')}catch(err){alert('导入失败')}};r.readAsText(f);e.target.value=''}
 
-// ═══════════════ Projects ═══════════════
-function projProgress(p){const ms=p.milestones||[];if(ms.length===0)return p.status==='done'?100:0;return Math.round(ms.filter(m=>m.completed).length/ms.length*100)}
-function renderProjList(){const list=document.getElementById('projList'),active=projects.filter(p=>p.status!=='done'),done=projects.filter(p=>p.status==='done');if(projects.length===0){list.innerHTML='<div class="empty-hint" style="padding:20px;text-align:center">暂无项目，点右上角「+ 新建」创建</div>';return}let h='';active.forEach(p=>{const pp=projProgress(p),fre=p.frequency_days||[1,2,3,4,5];h+=`<div class="proj-card" onclick="openProjectDetail('${p.id}')"><div class="proj-header"><div class="proj-title">${escHtml(p.title)}</div><span class="proj-status p-status ${p.status}">${p.status==='active'?'进行中':'暂停'}</span></div><div class="proj-bar"><div class="proj-bar-fill" style="width:${pp}%;background:${pp<30?'#e74c3c':pp<70?'#f0ad4e':'#5cb85c'}"></div></div><div class="proj-meta"><span>进度 ${pp}%</span><span>截止 ${(p.end_date||'').slice(0,10)}</span><span>每次 ${p.duration_per_session||1}h</span></div><div class="proj-freq">${WEEKDAYS.map((d,i)=>`<div class="d${fre.includes(i+1)?' on':''}">${d}</div>`).join('')}</div></div>`});done.forEach(p=>{h+=`<div class="proj-card" onclick="openProjectDetail('${p.id}')" style="opacity:.6"><div class="proj-header"><div class="proj-title">✓ ${escHtml(p.title)}</div><span class="proj-status p-status done">已完成</span></div><div class="proj-bar"><div class="proj-bar-fill" style="width:100%;background:#5cb85c"></div></div></div>`});list.innerHTML=h}
-function openProjectDetail(projId){editingProjId=projId||null;let p={title:'',description:'',start_date:new Date().toISOString().slice(0,10),end_date:new Date(Date.now()+30*86400000).toISOString().slice(0,10),frequency_days:[1,2,3,4,5],duration_per_session:1,show_on_calendar:true,milestones:[],status:'active'};if(projId){const f=projects.find(x=>x.id===projId);if(f)p={...p,...f}}const fre=p.frequency_days||[];let daySel='';WEEKDAYS.forEach((d,i)=>{daySel+=`<label class="${fre.includes(i+1)?'on':''}"><input type="checkbox" value="${i+1}" ${fre.includes(i+1)?'checked':''} onchange="this.parentElement.classList.toggle('on',this.checked)">${d}</label>`});const ms=p.milestones||[];let msHtml='<div class="milestone-list">';ms.forEach((m,i)=>{msHtml+=`<div class="milestone-item${m.completed?' done':''}"><input type="checkbox" ${m.completed?'checked':''} onchange="toggleProjMS(${i})"><span class="ms-title">${escHtml(m.title)}</span><button class="milestone-del" onclick="deleteProjMS(${i})">×</button></div>`});msHtml+='</div>';document.getElementById('projDetailContent').innerHTML=`<h3>${projId?'编辑项目':'新建项目'}</h3><div class="pr"><label>标题</label><input id="pdTitle" value="${escHtml(p.title)}"></div><div class="pr"><label>描述</label><input id="pdDesc" value="${escHtml(p.description||'')}"></div><div class="pr"><label>开始</label><input type="date" id="pdStart" value="${(p.start_date||'').slice(0,10)}"> <label>截止</label><input type="date" id="pdEnd" value="${(p.end_date||'').slice(0,10)}"></div><div class="pr"><label>频率</label><div class="day-picker">${daySel}</div></div><div class="pr"><label>每次</label><input type="number" id="pdDur" value="${p.duration_per_session||1}" step="0.5" min="0" style="width:60px"> <span style="font-size:12px;color:#888">小时</span></div><div class="pr"><label>日历</label><select id="pdCal"><option value="1" ${p.show_on_calendar!==false?'selected':''}>显示</option><option value="0" ${p.show_on_calendar===false?'selected':''}>隐藏</option></select> <label>状态</label><select id="pdStatus"><option value="active" ${p.status==='active'?'selected':''}>进行中</option><option value="paused" ${p.status==='paused'?'selected':''}>暂停</option><option value="done" ${p.status==='done'?'selected':''}>已完成</option></select></div><div style="font-size:13px;font-weight:600;margin:12px 0 6px">📌 里程碑 (${ms.filter(m=>m.completed).length}/${ms.length})</div>${msHtml}<div class="add-ms-row"><input id="pdNewMS" placeholder="新里程碑…"><button onclick="addProjMS()">+ 添加</button></div><div class="btn-row" style="margin-top:14px">${projId?`<button class="btn-discard" onclick="deleteProj('${projId}')">删除项目</button>`:''}<button class="btn-cancel" onclick="closeProjDetail()">取消</button><button class="btn-primary" onclick="saveProj()">保存</button></div>`;document.getElementById('projModalOverlay').classList.add('show');
-  document.getElementById('projModalOverlay')._projId=projId;document.getElementById('projModalOverlay')._ms=JSON.parse(JSON.stringify(ms))}
-function closeProjDetail(){document.getElementById('projModalOverlay').classList.remove('show');editingProjId=null}
-function toggleProjMS(idx){const ms=document.getElementById('projModalOverlay')._ms;if(ms[idx])ms[idx].completed=!ms[idx].completed}
-function deleteProjMS(idx){const ms=document.getElementById('projModalOverlay')._ms;ms.splice(idx,1);const projId=document.getElementById('projModalOverlay')._projId;if(projId)openProjectDetail(projId)}
-function addProjMS(){const t=document.getElementById('pdNewMS').value.trim();if(!t)return;const ms=document.getElementById('projModalOverlay')._ms;ms.push({title:t,completed:false});const projId=document.getElementById('projModalOverlay')._projId;if(projId)openProjectDetail(projId);document.getElementById('pdNewMS').value=''}
-async function saveProj(){const title=document.getElementById('pdTitle').value.trim();if(!title)return alert('请输入项目名称');const days=[];document.querySelectorAll('.day-picker input:checked').forEach(cb=>days.push(parseInt(cb.value)));const ms=document.getElementById('projModalOverlay')._ms||[];const data={title,description:document.getElementById('pdDesc').value.trim(),start_date:document.getElementById('pdStart').value,end_date:document.getElementById('pdEnd').value,frequency_days:days,duration_per_session:parseFloat(document.getElementById('pdDur').value)||0,show_on_calendar:document.getElementById('pdCal').value==='1',milestones:ms,status:document.getElementById('pdStatus').value,username:currentUser.username};
-  if(editingProjId){const idx=projects.findIndex(x=>x.id===editingProjId);if(idx>=0)projects[idx]={...projects[idx],...data};localSet(userKey('projects'),projects);if(isOnline())try{await sbPatch('projects',editingProjId,{...data,milestones:JSON.stringify(ms)})}catch(e){addPending({table:'projects',action:'update',id:editingProjId,data:{...data,milestones:JSON.stringify(ms)}})}}
-  else{const np={id:uid(),...data};projects.push(np);localSet(userKey('projects'),projects);if(isOnline())try{await sbPost('projects',{...data,id:np.id,milestones:JSON.stringify(ms)})}catch(e){addPending({table:'projects',action:'insert',data:{...data,id:np.id,milestones:JSON.stringify(ms)},id:np.id})}}
-  closeProjDetail();renderAll()}
-async function deleteProj(id){if(!confirm('删除此项目？'))return;projects=projects.filter(x=>x.id!==id);localSet(userKey('projects'),projects);if(isOnline())try{await sbDelete('projects',id)}catch(e){addPending({table:'projects',action:'delete',id})}closeProjDetail();renderAll()}
-
-// ═══════════════ Category Management ═══════════════
-function renderCatList(){const l=document.getElementById('catList');let h='';categories.forEach(c=>{const t=records.filter(r=>r.category_id===c.id).length;h+=`<div class="cat-item"><div class="cat-color" style="background:${c.color}"></div><div class="cat-info"><div class="name">${c.icon} ${c.name}</div><div class="meta">${t} 条记录${c.is_preset?' · 预设':''}</div></div><div class="cat-actions"><button class="btn-edit" onclick="editCat('${c.id}')">编辑</button>${!c.is_preset?`<button class="btn-del" onclick="deleteCat('${c.id}')">删除</button>`:''}</div></div>`});if(categories.length===0)h='<div class="empty-hint" style="padding:20px;text-align:center">暂无模块</div>';l.innerHTML=h}
-function openCatModal(catId){editingCatId=catId||null;if(catId){const c=categories.find(x=>x.id===catId);if(!c)return;document.getElementById('catModalTitle').textContent='编辑模块';document.getElementById('catName').value=c.name;document.getElementById('catIcon').value=c.icon;document.getElementById('catColor').value=c.color}else{document.getElementById('catModalTitle').textContent='添加新模块';document.getElementById('catName').value='';document.getElementById('catIcon').value='📌';document.getElementById('catColor').value=PRESET_COLORS[Math.floor(Math.random()*PRESET_COLORS.length)]}document.getElementById('catModalOverlay').classList.add('show')}
-function closeCatModal(){document.getElementById('catModalOverlay').classList.remove('show');editingCatId=null}
-async function saveCat(){const nm=document.getElementById('catName').value.trim(),ic=document.getElementById('catIcon').value.trim()||'📌',cl=document.getElementById('catColor').value;if(!nm)return alert('请输入名称');if(editingCatId){const c=categories.find(x=>x.id===editingCatId);if(c){c.name=nm;c.icon=ic;c.color=cl}localSet(userKey('categories'),categories);if(isOnline())try{await sbPatch('categories',editingCatId,{name:nm,icon:ic,color:cl})}catch(e){addPending({table:'categories',action:'update',id:editingCatId,data:{name:nm,icon:ic,color:cl}});document.getElementById('offlineBanner').classList.add('show')}else{addPending({table:'categories',action:'update',id:editingCatId,data:{name:nm,icon:ic,color:cl}});document.getElementById('offlineBanner').classList.add('show')}}else{const nc={id:uid(),username:currentUser.username,name:nm,icon:ic,color:cl,is_preset:false};categories.push(nc);localSet(userKey('categories'),categories);if(isOnline())try{await sbPost('categories',nc)}catch(e){addPending({table:'categories',action:'insert',data:nc,id:nc.id});document.getElementById('offlineBanner').classList.add('show')}else{addPending({table:'categories',action:'insert',data:nc,id:nc.id});document.getElementById('offlineBanner').classList.add('show')}}closeCatModal();renderAll()}
-function editCat(id){openCatModal(id)}
-async function deleteCat(id){const c=categories.find(x=>x.id===id);if(!c||c.is_preset)return;if(!confirm(`删除"${c.name}"？`))return;categories=categories.filter(x=>x.id!==id);localSet(userKey('categories'),categories);if(isOnline())try{await sbDelete('categories',id)}catch(e){addPending({table:'categories',action:'delete',id});document.getElementById('offlineBanner').classList.add('show')}else{addPending({table:'categories',action:'delete',id});document.getElementById('offlineBanner').classList.add('show')}renderAll()}
-function exportData(){const d={categories,records,projects};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='habit-tracker-'+new Date().toISOString().slice(0,10)+'.json';a.click()}
-function handleImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(d.categories)categories=d.categories;if(d.records)records=d.records;if(d.projects)projects=d.projects;localSet(userKey('categories'),categories);localSet(userKey('records'),records);localSet(userKey('projects'),projects);renderAll();alert('导入成功！')}catch(err){alert('导入失败')}};r.readAsText(f);e.target.value=''}
-
-// ═══════════════ Tabs ═══════════════
-function switchTab(tab){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`[data-tab="${tab}"]`).classList.add('active');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-'+tab).classList.add('active');if(tab==='stats')renderStats();if(tab==='manage')renderCatList();if(tab==='calendar')renderCalendar();if(tab==='projects')renderProjList()}
-document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-document.querySelectorAll('#statsRange button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#statsRange button').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeRange=b.dataset.range;renderStats()}));
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(document.getElementById('modalOverlay').classList.contains('show'))closeStopModal();if(document.getElementById('catModalOverlay').classList.contains('show'))closeCatModal();if(document.getElementById('projModalOverlay').classList.contains('show'))closeProjDetail();if(document.getElementById('calAddOverlay').classList.contains('show'))closeCalAdd();if(document.getElementById('cardOptOverlay').classList.contains('show'))closeCardOpt()}});
-window.addEventListener('online',()=>{if(currentUser){setStatus('syncing');syncPending().then(()=>{if(getPending().length===0)setStatus('online')})}});
-window.addEventListener('offline',()=>{if(currentUser){setStatus('offline');document.getElementById('offlineBanner').classList.add('show')}});
-
-// ═══════════════ Init ═══════════════
-(function(){const su=sessionStorage.getItem('ht_currentUser');if(su){try{currentUser=JSON.parse(su);document.getElementById('authScreen').classList.add('hidden');document.getElementById('appContainer').classList.remove('hidden');document.getElementById('userAvatar').textContent=(currentUser.nickname||currentUser.username)[0].toUpperCase();document.getElementById('userDisplay').textContent=currentUser.nickname||currentUser.username;initApp()}catch(e){currentUser=null}}if(!isOnline()&&currentUser){setStatus('offline');document.getElementById('offlineBanner').classList.add('show')}})();
+function switchTab(tab){document.querySelectorAll('.tabs a').forEach(function(b){b.classList.toggle('on',b.dataset.tab===tab)});document.querySelectorAll('.page').forEach(function(p){p.classList.toggle('on',p.id==='page-'+tab)});if(tab==='stats')renderStats();if(tab==='manage')renderCatList();if(tab==='calendar')renderCal();if(tab==='projects')renderProjs()}
+document.querySelectorAll('#statsRange button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#statsRange button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');activeRange=b.dataset.range;renderStats()})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(document.getElementById('stopOverlay').classList.contains('on'))closeStop();if(document.getElementById('catOverlay').classList.contains('on'))closeCat();if(document.getElementById('projOverlay').classList.contains('on'))closeProject();if(document.getElementById('calOverlay').classList.contains('on'))closeCalAdd();if(document.getElementById('cardOverlay').classList.contains('on'))closeCard()}});
+(function(){var su=sessionStorage.getItem('ht_u');if(su){try{USER=JSON.parse(su);document.getElementById('loginPage').classList.add('hidden');document.getElementById('appMain').classList.remove('hidden');document.getElementById('avatar').textContent=(USER.nickname||USER.username)[0].toUpperCase();document.getElementById('displayName').textContent=USER.nickname||USER.username;initApp()}catch(e){USER=null}}})()
 </script>
 </body>
 </html>
